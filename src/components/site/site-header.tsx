@@ -19,6 +19,18 @@ export function SiteHeader() {
 
         <nav className="flex items-center gap-2 sm:gap-4">
           <Link
+            href="/docker"
+            className="hidden text-xs text-mute transition-colors hover:text-ink sm:inline"
+          >
+            Docker
+          </Link>
+          <Link
+            href="/mcp"
+            className="hidden text-xs text-mute transition-colors hover:text-ink sm:inline"
+          >
+            MCP
+          </Link>
+          <Link
             href="/#gallery"
             className="hidden text-xs text-mute transition-colors hover:text-ink sm:inline"
           >
