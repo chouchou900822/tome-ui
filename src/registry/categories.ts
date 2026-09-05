@@ -38,6 +38,12 @@ export const categories: readonly Category[] = [
     description: "滑杆、开关与旋钮，把每一次调节都变成视觉享受。",
   },
   {
+    id: "navigation",
+    label: "导航",
+    code: "NAVIGATION",
+    description: "章节、页签与路径，把每一次跳转都变成顺滑的擦洗。",
+  },
+  {
     id: "textures",
     label: "纹理底纹",
     code: "TEXTURES",

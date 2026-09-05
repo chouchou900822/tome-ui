@@ -7,6 +7,7 @@ export type CategoryId =
   | "backgrounds"
   | "effects"
   | "inputs"
+  | "navigation"
   | "textures";
 
 export interface Category {

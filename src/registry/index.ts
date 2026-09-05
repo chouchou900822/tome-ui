@@ -4,6 +4,7 @@ import { cardEntries } from "./entries/cards";
 import { effectEntries } from "./entries/effects";
 import { effectMoreEntries } from "./entries/effects-more";
 import { inputEntries } from "./entries/inputs";
+import { navigationEntries } from "./entries/navigation";
 import { textEntries } from "./entries/text";
 import { textureEntries } from "./entries/textures";
 import type { CategoryId, RegistryEntry, RegistrySummary } from "./types";
@@ -20,6 +21,7 @@ export const registry: readonly RegistryEntry[] = [
   ...effectEntries,
   ...effectMoreEntries,
   ...inputEntries,
+  ...navigationEntries,
   ...textureEntries,
 ];
 
