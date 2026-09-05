@@ -31,6 +31,12 @@ export const categories: readonly Category[] = [
     code: "EFFECTS",
     description: "跑马灯、数字滚动、边框光束，为页面注入节律。",
   },
+  {
+    id: "inputs",
+    label: "输入控件",
+    code: "INPUTS",
+    description: "滑杆、开关与旋钮，把每一次调节都变成视觉享受。",
+  },
 ] as const;
 
 export function getCategory(id: CategoryId): Category {

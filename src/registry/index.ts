@@ -2,6 +2,7 @@ import { backgroundEntries } from "./entries/backgrounds";
 import { buttonEntries } from "./entries/buttons";
 import { cardEntries } from "./entries/cards";
 import { effectEntries } from "./entries/effects";
+import { inputEntries } from "./entries/inputs";
 import { textEntries } from "./entries/text";
 import type { CategoryId, RegistryEntry, RegistrySummary } from "./types";
 
@@ -15,6 +16,7 @@ export const registry: readonly RegistryEntry[] = [
   ...cardEntries,
   ...backgroundEntries,
   ...effectEntries,
+  ...inputEntries,
 ];
 
 export function getEntry(slug: string): RegistryEntry | undefined {

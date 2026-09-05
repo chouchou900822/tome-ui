@@ -5,7 +5,8 @@ export type CategoryId =
   | "buttons"
   | "cards"
   | "backgrounds"
-  | "effects";
+  | "effects"
+  | "inputs";
 
 export interface Category {
   id: CategoryId;
