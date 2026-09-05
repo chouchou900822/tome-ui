@@ -1,5 +1,4 @@
 import { HeroActions } from "@/components/home/hero-actions";
-import { CategoryIndex } from "@/components/home/category-index";
 import { site } from "@/lib/site";
 import { categories, registry } from "@/registry";
 import { DotGrid } from "@/registry/components/backgrounds/dot-grid";
@@ -67,7 +66,6 @@ export function Hero() {
           </div>
         </div>
 
-        <CategoryIndex />
       </DotGrid>
     </section>
   );
