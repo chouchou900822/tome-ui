@@ -4,6 +4,7 @@ export type CategoryId =
   | "text"
   | "buttons"
   | "cards"
+  | "scroll"
   | "backgrounds"
   | "effects"
   | "inputs"

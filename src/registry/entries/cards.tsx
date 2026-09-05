@@ -1,5 +1,6 @@
-import { Cpu, Gem, Orbit, Wand2, Zap } from "lucide-react";
+import { Cpu, Gem, Orbit, Wand2, Waves, Zap } from "lucide-react";
 import { ElectricBorder } from "@/registry/components/cards/electric-border";
+import { FluidDistortionCard } from "@/registry/components/cards/fluid-distortion-card";
 import { GlareCard } from "@/registry/components/cards/glare-card";
 import { GlassSurface } from "@/registry/components/cards/glass-surface";
 import { SpotlightCard } from "@/registry/components/cards/spotlight-card";
@@ -232,6 +233,61 @@ export function Showcase() {
         </h4>
         <p className="mt-2 text-sm text-zinc-400">移动鼠标试试果冻手感。</p>
       </WobbleCard>
+    ),
+  },
+  {
+    slug: "fluid-distortion-card",
+    title: "流体扭曲卡片",
+    name: "Fluid Distortion Card",
+    category: "cards",
+    description: "指针掠过卡面时，局部彩色色场像透过液体玻璃一样产生折射与流动形变。",
+    designNotes: [
+      "卡体使用 rounded-3xl、1px 白色 12% 边框与 #09090b 底色，演示高度 240px、内容内边距 28px",
+      "背景由 190px 青色 #22d3ee（42% 透明度、42px 模糊）与 220px 紫色 #a855f7（40% 透明度、52px 模糊）两团色场构成，叠加 14px 间距的白色 12% 斜向流线",
+      "SVG 滤镜组合 fractalNoise（baseFrequency 0.012 0.025、2 倍频、seed 7）与 feDisplacementMap（scale 32、R/B 通道）",
+      "扭曲副本只在指针周围 110px 径向遮罩内显示，中心至 42% 保持完整，边缘渐隐；坐标通过 CSS 变量更新而不触发 React 重渲染",
+      "进入时 180ms 淡入、离开时 260ms 淡出；prefers-reduced-motion 下停止 8–10s 色场漂移并显示 26% 静态低强度纹理",
+    ],
+    deps: [],
+    file: "cards/fluid-distortion-card.tsx",
+    tags: ["流体", "SVG 滤镜", "鼠标跟随", "交互卡片"],
+    usage: `import { Waves } from "lucide-react";
+import { FluidDistortionCard } from "@/components/ui/fluid-distortion-card";
+
+export function Feature() {
+  return (
+    <FluidDistortionCard className="h-60 w-full max-w-sm">
+      <div className="flex h-full flex-col justify-between">
+        <Waves className="size-6 text-cyan-200" />
+        <div>
+          <h3 className="text-2xl font-semibold text-white">流动界面</h3>
+          <p className="mt-2 text-sm text-zinc-300">
+            移动指针，让色彩像液体一样发生偏折。
+          </p>
+        </div>
+      </div>
+    </FluidDistortionCard>
+  );
+}`,
+    preview: (
+      <FluidDistortionCard className="h-52 w-full max-w-xs @md:h-60 @md:max-w-sm">
+        <div className="flex h-full flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <Waves className="size-5 text-cyan-100 @md:size-6" />
+            <span className="font-mono text-[9px] tracking-[0.24em] text-white/45 @md:text-[10px]">
+              INTERACTIVE SURFACE
+            </span>
+          </div>
+          <div>
+            <h4 className="text-xl font-semibold tracking-tight text-white @md:text-2xl">
+              流动界面
+            </h4>
+            <p className="mt-2 max-w-xs text-xs leading-relaxed text-zinc-300 @md:text-sm">
+              移动指针，让色彩像液体一样发生偏折。
+            </p>
+          </div>
+        </div>
+      </FluidDistortionCard>
     ),
   },
 ];

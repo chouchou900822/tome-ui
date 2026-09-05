@@ -20,6 +20,12 @@ export const categories: readonly Category[] = [
     description: "跟随鼠标的光斑与三维倾斜，让信息容器不再扁平。",
   },
   {
+    id: "scroll",
+    label: "滚动交互",
+    code: "SCROLL",
+    description: "把滚动距离变成镜头、层级与角色动作，组织连续的页面叙事。",
+  },
+  {
     id: "backgrounds",
     label: "背景",
     code: "BACKGROUNDS",
