@@ -33,11 +33,10 @@ export function ComponentCard({ item }: ComponentCardProps) {
       transition={{ type: "spring", stiffness: 260, damping: 28 }}
       className="group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-panel transition-colors hover:border-white/20"
     >
-      <Link href={`/c/${summary.slug}`} className="block" aria-label={`查看 ${summary.title}`}>
-        <PreviewFrame className="aspect-[4/3]" contentClassName={previewClassName}>
-          {preview}
-        </PreviewFrame>
-      </Link>
+      {/* 舞台不包链接：预览内的交互（拖动、点击）不触发跳转，进详情走标题或右上角箭头 */}
+      <PreviewFrame className="aspect-[4/3]" contentClassName={previewClassName}>
+        {preview}
+      </PreviewFrame>
 
       <div className="flex items-start justify-between gap-4 px-5 pb-5 pt-4">
         <div className="min-w-0">

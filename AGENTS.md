@@ -51,6 +51,8 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 `preview` 适配规则：预览舞台是容器查询上下文（`@container`），需同时适配卡片小舞台（4:3）与详情页大舞台（高 ≥420px），字号用 `@md:`、`@xl:` 变体过渡（如 `text-2xl @md:text-4xl @xl:text-6xl`）。
 
+入场动画（挂载即播、只播一次）的组件需提供 `loop` 属性：播完停顿约 2s 后自动重播，且 `preview` 中开启 `loop`——卡片随画廊渲染、用户滚到时动画早已播完，循环才能被看到；真实使用默认关闭（参考 `SplitText`、`BlurText`、`DecryptText`）。进视口触发（`whileInView`）的组件用 `once: false` 即可，悬停触发的组件初始静态可见，都不需要 loop。
+
 ### 3. 验证
 
 ```bash

@@ -129,7 +129,7 @@ export function Headline() {
       "使用 requestAnimationFrame 驱动，每 30ms 更新一帧，每帧揭示 0.5 个字符",
       "未揭示的位置从 !<>-_\\/[]{}=+*^?# 与大写字母、数字中随机取字，空格保持不变",
       "首帧与服务端渲染的都是最终文本，挂载后才开始乱码，避免水合不一致",
-      "鼠标悬停可重新播放，组件卸载时取消动画帧",
+      "鼠标悬停可重新播放；loop 开启时播完停 2.2s 自动重播，卸载时清理动画帧与定时器",
       "使用等宽字体与 tabular-nums，乱码切换时宽度不抖动；尊重 prefers-reduced-motion",
     ],
     deps: ["motion"],
@@ -148,6 +148,7 @@ export function Terminal() {
       <div className="flex flex-col items-center gap-3">
         <DecryptText
           text="ACCESS GRANTED"
+          loop
           className="text-2xl font-semibold tracking-[0.2em] text-lime-300 @md:text-4xl @xl:text-6xl"
         />
         <DecryptText
@@ -203,7 +204,7 @@ export function Headline() {
     description: "字符从各自的裁切框底部依次升起，像一行排版被逐字推上来。",
     designNotes: [
       "每个字符套一层 overflow-hidden 裁切框，字符从 translateY 110% 升到 0%",
-      "字符间隔默认 35ms，单字 0.6s、cubic-bezier(0.22,1,0.36,1) 缓出，挂载即播放",
+      "字符间隔默认 35ms，单字 0.6s、cubic-bezier(0.22,1,0.36,1) 缓出，挂载即播放；loop 开启时播完停 1.8s 自动重播",
       "空格渲染为不断行空格保持宽度；外层 aria-label 保留完整文本",
       "prefers-reduced-motion 时直接显示成品",
     ],
@@ -221,7 +222,7 @@ export function Hero() {
 }`,
     preview: (
       <h3 className="text-center text-2xl font-semibold tracking-tight text-white @md:text-4xl @xl:text-6xl">
-        <SplitText text="逐字推上舞台" />
+        <SplitText text="逐字推上舞台" loop />
       </h3>
     ),
   },
@@ -233,7 +234,7 @@ export function Hero() {
     description: "以词为单位从失焦的光斑中对焦成形，比逐字入场更柔和的副标题动效。",
     designNotes: [
       "按空格切词，每词整团显影：blur 16px 到 0、scale 1.06 到 1、透明到不透明",
-      "单词 0.55s、词间隔默认 120ms，挂载即播放；比逐字版本更柔和",
+      "单词 0.55s、词间隔默认 120ms，挂载即播放；比逐字版本更柔和，loop 开启时播完停 1.8s 自动重播",
       "scale 走独立属性，避免与 transform 位移叠加；外层 aria-label 保留完整文本",
       "prefers-reduced-motion 时直接显示成品",
     ],
@@ -251,7 +252,7 @@ export function SubHeadline() {
 }`,
     preview: (
       <p className="max-w-[26ch] text-center text-lg leading-relaxed text-zinc-300 @md:text-2xl @xl:text-3xl">
-        <BlurText text="复制一段提示词，得到一个有质感的组件。" />
+        <BlurText text="复制一段提示词，得到一个有质感的组件。" loop />
       </p>
     ),
   },

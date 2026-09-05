@@ -13,6 +13,8 @@ interface DecryptTextProps {
   frameDelay?: number;
   /** 鼠标悬停时重新播放 */
   replayOnHover?: boolean;
+  /** 播完后自动重播（用于演示场景） */
+  loop?: boolean;
   /** 乱码字符集 */
   glyphs?: string;
 }
@@ -29,15 +31,18 @@ export function DecryptText({
   revealPerFrame = 0.5,
   frameDelay = 30,
   replayOnHover = true,
+  loop = false,
   glyphs = DEFAULT_GLYPHS,
 }: DecryptTextProps) {
   const [display, setDisplay] = useState(text);
   const frame = useRef<number | null>(null);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const reduce = useReducedMotion();
 
   const play = useCallback(() => {
     if (reduce) return;
     if (frame.current !== null) cancelAnimationFrame(frame.current);
+    if (timer.current !== null) clearTimeout(timer.current);
 
     const chars = Array.from(text);
     let revealed = 0;
@@ -61,16 +66,18 @@ export function DecryptText({
       } else {
         setDisplay(text);
         frame.current = null;
+        if (loop) timer.current = setTimeout(play, 2200);
       }
     };
 
     frame.current = requestAnimationFrame(step);
-  }, [text, frameDelay, revealPerFrame, glyphs, reduce]);
+  }, [text, frameDelay, revealPerFrame, glyphs, reduce, loop]);
 
   useEffect(() => {
     play();
     return () => {
       if (frame.current !== null) cancelAnimationFrame(frame.current);
+      if (timer.current !== null) clearTimeout(timer.current);
     };
   }, [play]);
 
