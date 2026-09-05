@@ -77,9 +77,6 @@ export function GalleryNav({ items, activeId, query, resultCount, onQuery, onNav
                         active ? "border-accent" : "border-line",
                       )}
                     >
-                      <span className="font-pixel text-[10px] text-mute">
-                        {String(item.count).padStart(2, "0")}
-                      </span>
                       <span
                         className={cn(
                           "font-mono text-[10px] uppercase tracking-[0.2em]",
