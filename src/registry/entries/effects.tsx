@@ -73,6 +73,7 @@ export function LogoWall() {
       "用 motion 的 animate(0, value) 驱动，时长 1.8s，缓动 cubic-bezier(0.16,1,0.3,1) 先快后慢",
       "通过 Intl.NumberFormat 格式化，支持千分位、小数位、前后缀",
       "使用 tabular-nums 等宽数字，滚动时宽度不抖动",
+      "等宽数字加千分位后整串不可换行，并排多项数据时用 flex-wrap 并给足间距，防止长数字（如 12,800+）溢出与相邻项重合",
       "服务端渲染最终值利于 SEO，客户端挂载后再重置为 0 开始播放；尊重 prefers-reduced-motion",
     ],
     deps: ["motion"],
@@ -82,7 +83,7 @@ export function LogoWall() {
 
 export function Stats() {
   return (
-    <div className="flex gap-12">
+    <div className="flex flex-wrap gap-x-12 gap-y-4">
       <div>
         <NumberTicker value={12800} suffix="+" className="text-5xl font-semibold" />
         <p className="text-sm text-zinc-500">开发者</p>
@@ -95,7 +96,7 @@ export function Stats() {
   );
 }`,
     preview: (
-      <div className="grid w-full max-w-md grid-cols-3 gap-4 text-center">
+      <div className="flex w-full max-w-md flex-wrap items-baseline justify-center gap-x-10 gap-y-4 text-center">
         {[
           { value: 12800, suffix: "+", label: "开发者", decimals: 0 },
           { value: 99.9, suffix: "%", label: "可用性", decimals: 1 },
