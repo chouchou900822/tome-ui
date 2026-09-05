@@ -1,54 +1,9 @@
 import { MousePointerClick } from "lucide-react";
-import { AnimatedBeam } from "@/registry/components/effects/animated-beam";
 import { ClickSpark } from "@/registry/components/effects/click-spark";
 import { TextPressure } from "@/registry/components/effects/text-pressure";
 import type { RegistryEntry } from "@/registry/types";
 
 export const effectMoreEntries: RegistryEntry[] = [
-  {
-    slug: "animated-beam",
-    title: "流动光束",
-    name: "Animated Beam",
-    category: "effects",
-    description: "一条渐变虚线弧连接两个节点，光点沿路径无限巡游，讲述数据在流动。",
-    designNotes: [
-      "恰好接收两个子元素作为端点节点，组件用 cloneElement 注入 ref；容器 relative，SVG 覆盖其上",
-      "路径为二次贝塞尔：两端取节点中心，控制点在两端的较小 y 上方 60px（向上拱），端点位置由 getBoundingClientRect 实时计算",
-      "描边是青 #22d3ee 到紫 #a855f7 的 userSpaceOnUse 渐变、宽 1.5px、透明度 45%、6/4 虚线",
-      "一颗 4px 光点用 SVG animateMotion 沿路径巡游，默认 3s 一圈；ResizeObserver 跟随两端节点尺寸重算路径",
-      "prefers-reduced-motion 时光点静止，仅保留渐变弧线",
-    ],
-    deps: [],
-    file: "effects/animated-beam.tsx",
-    tags: ["连线", "流程", "渐变", "SVG"],
-    usage: `import { AnimatedBeam } from "@/components/ui/animated-beam";
-
-export function Flow() {
-  return (
-    <AnimatedBeam curvature={60} className="flex items-center justify-between py-8">
-      <div className="flex size-16 items-center justify-center rounded-2xl border border-white/10 bg-zinc-900">
-        数据源
-      </div>
-      <div className="flex size-16 items-center justify-center rounded-2xl border border-white/10 bg-zinc-900">
-        终端
-      </div>
-    </AnimatedBeam>
-  );
-}`,
-    preview: (
-      <AnimatedBeam
-        curvature={48}
-        className="flex w-full max-w-md items-center justify-between px-2"
-      >
-        <div className="flex size-14 items-center justify-center rounded-2xl border border-white/10 bg-zinc-900 text-[11px] text-zinc-400 @md:size-16 @md:text-xs">
-          数据源
-        </div>
-        <div className="flex size-14 items-center justify-center rounded-2xl border border-white/10 bg-zinc-900 text-[11px] text-zinc-400 @md:size-16 @md:text-xs">
-          终端
-        </div>
-      </AnimatedBeam>
-    ),
-  },
   {
     slug: "click-spark",
     title: "点击火花",
