@@ -23,6 +23,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="zh-CN"
+      data-scroll-behavior="smooth"
       className={`${GeistSans.variable} ${GeistMono.variable} ${GeistPixelSquare.variable} h-full`}
     >
       <body className="flex min-h-full flex-col">

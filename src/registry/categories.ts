@@ -56,3 +56,8 @@ export function getCategory(id: CategoryId): Category {
   if (!found) throw new Error(`未知分类：${id}`);
   return found;
 }
+
+/** 两位数编号，例如 03；放在这里供客户端组件深导入，不必经过聚合 barrel */
+export function formatIndex(index: number): string {
+  return String(index + 1).padStart(2, "0");
+}

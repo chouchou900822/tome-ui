@@ -1,8 +1,8 @@
 import { HeroActions } from "@/components/home/hero-actions";
+import { CategoryIndex } from "@/components/home/category-index";
 import { site } from "@/lib/site";
-import { categories, formatIndex, registry } from "@/registry";
+import { categories, registry } from "@/registry";
 import { DotGrid } from "@/registry/components/backgrounds/dot-grid";
-import { Marquee } from "@/registry/components/effects/marquee";
 import { NumberTicker } from "@/registry/components/effects/number-ticker";
 import { TextReveal } from "@/registry/components/text/text-reveal";
 
@@ -60,24 +60,14 @@ export function Hero() {
                 <p className="max-w-md font-mono text-[10px] uppercase leading-relaxed tracking-[0.2em] text-mute lg:text-right">
                   本站界面全部由词典中的组件搭建
                   <br />
-                  点阵背景 · 文字显现 · 磁吸按钮 · 流光按钮 · 数字滚动 · 跑马灯
+                  点阵背景 · 文字显现 · 磁吸按钮 · 流光按钮 · 数字滚动
                 </p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-line py-5">
-          <Marquee duration={40}>
-            {registry.map((entry, i) => (
-              <span key={entry.slug} className="flex items-baseline gap-3 whitespace-nowrap">
-                <span className="font-pixel text-xs text-accent">{formatIndex(i)}</span>
-                <span className="text-lg font-medium tracking-tight text-ink/80">{entry.title}</span>
-                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-mute">{entry.name}</span>
-              </span>
-            ))}
-          </Marquee>
-        </div>
+        <CategoryIndex />
       </DotGrid>
     </section>
   );

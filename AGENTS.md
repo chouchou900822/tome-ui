@@ -35,7 +35,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ### 2. 注册条目：`src/registry/entries/<分类>.tsx`
 
-在数组**末尾**追加一个 `RegistryEntry`（数组顺序 = 词典编号 No.XX、首页跑马灯、详情页前后导航的顺序）：
+在数组**末尾**追加一个 `RegistryEntry`（数组顺序 = 词典编号 No.XX 与详情页前后导航的顺序；首页画廊目录/分节与 Hero 分类索引按各分类条目数降序展示，与数组顺序无关）：
 
 - `slug`：kebab-case，全站唯一，决定 `/c/<slug>` 与 `/api/prompt/<slug>`
 - `title` / `name`：中文名 / 英文名
@@ -76,11 +76,11 @@ pnpm dev   # 逐项检查下列清单（命令分行，兼容不支持 && 的终
 1. `src/registry/types.ts`：`CategoryId` 联合类型加新 id
 2. `src/registry/categories.ts`：`categories` 数组加一条（id、中文 `label`、英文 `code`、`description`）——首页筛选按钮与 `llms.txt` 章节标题来自这里
 3. 新建 `src/registry/entries/<新分类>.tsx`，导出 `xxxEntries: RegistryEntry[]`
-4. `src/registry/index.ts`：import 并展开进 `registry` 数组（位置决定跑马灯区段顺序）
+4. `src/registry/index.ts`：import 并展开进 `registry` 数组（位置决定词典编号顺序）
 
 ### 自动生效清单（不要手工维护）
 
-详情页路由与 metadata、首页卡片与画廊筛选、⌘K 搜索、词典编号、跑马灯、前后导航、`llms.txt` 索引、`/api/prompt/<slug>`、首页统计数字。
+详情页路由与 metadata、首页卡片与画廊目录/分节（按条目数降序）、⌘K 搜索、词典编号、Hero 分类索引条、前后导航、`llms.txt` 索引、`/api/prompt/<slug>`、首页统计数字。
 
 ### 提示词拼接机制（了解即可）
 
