@@ -14,6 +14,7 @@ Tome（意为「典籍」）是一个开源的「组件词典」。每个组件�
 - **⌘K 命令面板**：按名称、描述、标签模糊搜索，方向键选择，回车跳转
 - **分类筛选**：与 URL 同步（`/?category=text`），可直接分享
 - **给 AI 用的接口**：`/llms.txt` 索引全部组件；`/api/prompt/{slug}` 直接返回 Markdown 提示词，AI 代理或 `curl` 都能拉取
+- **MCP 服务器**：本地 stdio 与远程 streamable-http 两种传输，AI 客户端可直接查询组件列表与提示词
 - **全静态**：`next build` 产出纯静态页面，可部署到任何静态托管
 
 ## 内置组件（16 个）
@@ -37,6 +38,32 @@ pnpm dev        # http://localhost:3000
 pnpm build      # 生产构建（全静态）
 pnpm typecheck  # TypeScript 严格检查
 ```
+
+## MCP 服务器
+
+内置一个 MCP（Model Context Protocol）服务器，把整个词典暴露给 AI 客户端，提供两个工具：
+
+- `list_components`：列出全部组件（编号、slug、中英文名、分类、描述、标签、依赖），支持按分类与关键词过滤
+- `get_component_prompt`：按 slug 返回该组件的完整 AI 提示词（目标 → 前置条件 → 设计要点 → 源码 → 用法 → 验收标准）
+
+```bash
+pnpm mcp                                             # 本地 stdio 传输（默认）
+pnpm mcp:http                                        # streamable-http，默认 http://127.0.0.1:8787/mcp
+pnpm mcp:http -- --host 0.0.0.0 --port 9000          # 自定义监听地址（用于远程部署）
+```
+
+在 Claude Code 中接入：
+
+```bash
+# 本地 stdio（Windows 下用 cmd /c 包装 pnpm 的 .cmd shim）
+claude mcp add tome -- cmd /c pnpm mcp               # Windows
+claude mcp add tome -- pnpm mcp                      # macOS / Linux
+
+# 远程 streamable-http（服务器上 clone 仓库、pnpm install、pnpm mcp:http 后）
+claude mcp add --transport http tome http://<host>:8787/mcp
+```
+
+Cursor、Windsurf 等 MCP 客户端同理配置。词典条目变动后 MCP 数据自动同步，无需任何维护。
 
 ## 技术栈
 
