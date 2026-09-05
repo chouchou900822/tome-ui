@@ -1,0 +1,40 @@
+import type { Category, CategoryId } from "./types";
+
+export const categories: readonly Category[] = [
+  {
+    id: "text",
+    label: "文字动效",
+    code: "TEXT",
+    description: "让标题与文案自己开口说话：显现、闪光、打字、解码。",
+  },
+  {
+    id: "buttons",
+    label: "按钮",
+    code: "BUTTONS",
+    description: "用户最常点击的地方，值得多一点物理感与光泽。",
+  },
+  {
+    id: "cards",
+    label: "卡片",
+    code: "CARDS",
+    description: "跟随鼠标的光斑与三维倾斜，让信息容器不再扁平。",
+  },
+  {
+    id: "backgrounds",
+    label: "背景",
+    code: "BACKGROUNDS",
+    description: "一层氛围，撑起整个首屏：极光、点阵与光晕。",
+  },
+  {
+    id: "effects",
+    label: "特效",
+    code: "EFFECTS",
+    description: "跑马灯、数字滚动、边框光束，为页面注入节律。",
+  },
+] as const;
+
+export function getCategory(id: CategoryId): Category {
+  const found = categories.find((c) => c.id === id);
+  if (!found) throw new Error(`未知分类：${id}`);
+  return found;
+}

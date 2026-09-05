@@ -1,16 +1,26 @@
 {
-  "name": "magic-ui",
+  "name": "tome-ui",
   "version": "0.1.0",
   "private": true,
+  "description": "面向 AI Vibe Coding 的前端组件词典：复制一段提示词，得到一个惊艳的组件",
+  "license": "MIT",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "clsx": "^2.1.1",
+    "geist": "^1.7.2",
+    "lucide-react": "^1.41.0",
+    "motion": "^13.2.0",
     "next": "16.3.4",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "server-only": "^0.0.1",
+    "shiki": "^4.4.3",
+    "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -20,5 +30,11 @@
     "tailwindcss": "^4",
     "typescript": "^5"
   },
-  "packageManager": "pnpm@10.31.0"
+  "packageManager": "pnpm@10.31.0",
+  "pnpm": {
+    "ignoredBuiltDependencies": [
+      "sharp",
+      "unrs-resolver"
+    ]
+  }
 }

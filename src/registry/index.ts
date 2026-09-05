@@ -1,0 +1,41 @@
+import { backgroundEntries } from "./entries/backgrounds";
+import { buttonEntries } from "./entries/buttons";
+import { cardEntries } from "./entries/cards";
+import { effectEntries } from "./entries/effects";
+import { textEntries } from "./entries/text";
+import type { CategoryId, RegistryEntry, RegistrySummary } from "./types";
+
+export { categories, getCategory } from "./categories";
+export type { Category, CategoryId, RegistryEntry, RegistrySummary } from "./types";
+
+/** 词典全部条目，顺序即编号顺序 */
+export const registry: readonly RegistryEntry[] = [
+  ...textEntries,
+  ...buttonEntries,
+  ...cardEntries,
+  ...backgroundEntries,
+  ...effectEntries,
+];
+
+export function getEntry(slug: string): RegistryEntry | undefined {
+  return registry.find((e) => e.slug === slug);
+}
+
+export function getEntryIndex(slug: string): number {
+  return registry.findIndex((e) => e.slug === slug);
+}
+
+export function getEntriesByCategory(category: CategoryId): RegistryEntry[] {
+  return registry.filter((e) => e.category === category);
+}
+
+/** 去掉不可序列化字段，便于作为 props 传给客户端组件 */
+export function toSummary(entry: RegistryEntry): RegistrySummary {
+  const { preview: _preview, previewClassName: _previewClassName, ...summary } = entry;
+  return summary;
+}
+
+/** 两位数编号，例如 03 */
+export function formatIndex(index: number): string {
+  return String(index + 1).padStart(2, "0");
+}
