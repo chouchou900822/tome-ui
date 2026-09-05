@@ -1,14 +1,25 @@
 "use client";
 
-import { AnimatePresence, LayoutGroup, motion } from "motion/react";
-import { useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ComponentCard, type GalleryItem } from "@/components/gallery/component-card";
-import { FilterBar } from "@/components/gallery/filter-bar";
+import { GalleryNav, type NavItem } from "@/components/gallery/gallery-nav";
+import { GallerySection } from "@/components/gallery/gallery-section";
+import { useSectionSpy } from "@/components/gallery/use-section-spy";
 import { filterEntries } from "@/lib/search";
-import { categories, type CategoryId } from "@/registry";
+import { categories } from "@/registry/categories";
+import type { Category, CategoryId } from "@/registry/types";
 
 interface GalleryProps {
+  items: GalleryItem[];
+}
+
+const SECTION_PREFIX = "cat-";
+
+type Selection = CategoryId | "all";
+
+interface Section {
+  category: Category;
   items: GalleryItem[];
 }
 
@@ -16,50 +27,122 @@ function isCategory(value: string | null): value is CategoryId {
   return categories.some((c) => c.id === value);
 }
 
-/** 首页画廊：分类与关键词筛选，卡片增删带布局动画，分类同步到 URL */
+/** 按条目数降序分组（数量相同保持分类定义顺序）；画廊目录与分节顺序、Hero 索引条共用此排序 */
+function groupByCategory(items: GalleryItem[]): Section[] {
+  return categories
+    .map((category) => ({
+      category,
+      items: items.filter((i) => i.summary.category === category.id),
+    }))
+    .filter((section) => section.items.length > 0)
+    .sort((a, b) => b.items.length - a.items.length);
+}
+
+/**
+ * 首页画廊编排层：目录选中式渲染 + 关键词搜索。
+ * 选中态完全由 ?category= 派生（router.replace 驱动）：选中分类只渲染该节，
+ * 「全部」为分节总览；被动滚动不回写 URL。
+ */
 export function Gallery({ items }: GalleryProps) {
   const params = useSearchParams();
-  const initial = params.get("category");
-  const [category, setCategory] = useState<CategoryId | "all">(isCategory(initial) ? initial : "all");
+  const router = useRouter();
+  const raw = params.get("category");
+  const selected: Selection = isCategory(raw) ? raw : "all";
   const [query, setQuery] = useState("");
 
-  const visible = useMemo(() => {
-    const summaries = items.map((i) => i.summary);
-    const kept = new Set(filterEntries(summaries, { category, query }).map((s) => s.slug));
-    return items.filter((i) => kept.has(i.summary.slug));
-  }, [items, category, query]);
+  const sections = useMemo(() => groupByCategory(items), [items]);
 
-  const changeCategory = (next: CategoryId | "all") => {
-    setCategory(next);
-    const url = new URL(window.location.href);
-    if (next === "all") url.searchParams.delete("category");
-    else url.searchParams.set("category", next);
-    window.history.replaceState(null, "", url);
+  const results = useMemo(() => {
+    if (!query.trim()) return null;
+    const summaries = items.map((i) => i.summary);
+    const kept = new Set(filterEntries(summaries, { category: "all", query }).map((s) => s.slug));
+    return items.filter((i) => kept.has(i.summary.slug));
+  }, [items, query]);
+
+  const selectedSection = useMemo(
+    () => (selected === "all" ? null : (sections.find((s) => s.category.id === selected) ?? null)),
+    [sections, selected],
+  );
+
+  const navItems: NavItem[] = [
+    { id: "all", label: "全部", code: "ALL", count: items.length },
+    ...sections.map(({ category, items: sectionItems }) => ({
+      id: category.id,
+      label: category.label,
+      code: category.code,
+      count: sectionItems.length,
+    })),
+  ];
+
+  // scrollspy 仅「全部」分节视图需要：单分类/搜索态传空数组断开观察，切回时对新元素重新 observe
+  const showSections = selected === "all" && !results;
+  const sectionIds = useMemo(
+    () => (showSections ? sections.map((s) => `${SECTION_PREFIX}${s.category.id}`) : []),
+    [showSections, sections],
+  );
+  const spyId = useSectionSpy(sectionIds);
+  const activeId: Selection = useMemo(() => {
+    if (selected !== "all") return selected;
+    const id = spyId?.slice(SECTION_PREFIX.length) ?? null;
+    return isCategory(id) ? id : "all";
+  }, [selected, spyId]);
+
+  const navigate = (id: Selection) => {
+    setQuery("");
+    router.replace(id === "all" ? "/" : `/?category=${id}`, { scroll: false });
   };
 
+  // 软导航（目录点击、Hero 索引条、详情页返回）后滚到画廊顶部；首次挂载交给深链锚点
+  const firstRender = useRef(true);
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    document.getElementById("gallery")?.scrollIntoView({ behavior: "smooth" });
+  }, [selected]);
+
   return (
-    <div>
-      <FilterBar
-        category={category}
+    // lg 以下保持普通流：sticky 吸顶条若是单列 grid item，grid area 只有自身高度，sticky 会失效
+    <div className="lg:grid lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-10">
+      <GalleryNav
+        items={navItems}
+        activeId={activeId}
         query={query}
-        total={visible.length}
-        onCategory={changeCategory}
+        resultCount={results ? results.length : null}
         onQuery={setQuery}
+        onNavigate={navigate}
       />
 
-      <LayoutGroup>
-        <motion.div layout className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          <AnimatePresence mode="popLayout">
-            {visible.map((item) => (
-              <ComponentCard key={item.summary.slug} item={item} />
-            ))}
-          </AnimatePresence>
-        </motion.div>
-      </LayoutGroup>
-
-      {visible.length === 0 ? (
-        <p className="py-24 text-center text-sm text-mute">没有匹配的组件，换个关键词试试。</p>
-      ) : null}
+      <div>
+        {results ? (
+          results.length > 0 ? (
+            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+              {results.map((item) => (
+                <ComponentCard key={item.summary.slug} item={item} />
+              ))}
+            </div>
+          ) : (
+            <p className="py-24 text-center text-sm text-mute">没有匹配的组件，换个关键词试试。</p>
+          )
+        ) : selectedSection ? (
+          <GallerySection
+            category={selectedSection.category}
+            ordinal={sections.indexOf(selectedSection)}
+            items={selectedSection.items}
+            startExpanded
+          />
+        ) : (
+          sections.map((section, ordinal) => (
+            <GallerySection
+              key={section.category.id}
+              ordinal={ordinal}
+              category={section.category}
+              items={section.items}
+            />
+          ))
+        )}
+      </div>
     </div>
   );
 }
