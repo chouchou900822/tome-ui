@@ -37,6 +37,12 @@ export const categories: readonly Category[] = [
     code: "INPUTS",
     description: "滑杆、开关与旋钮，把每一次调节都变成视觉享受。",
   },
+  {
+    id: "textures",
+    label: "纹理底纹",
+    code: "TEXTURES",
+    description: "像素与字符铺成的数字噪声，沉在最底层的科技质感。",
+  },
 ] as const;
 
 export function getCategory(id: CategoryId): Category {

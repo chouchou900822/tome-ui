@@ -1,6 +1,10 @@
-import { Cpu, Orbit } from "lucide-react";
+import { Cpu, Gem, Orbit, Wand2, Zap } from "lucide-react";
+import { ElectricBorder } from "@/registry/components/cards/electric-border";
+import { GlareCard } from "@/registry/components/cards/glare-card";
+import { GlassSurface } from "@/registry/components/cards/glass-surface";
 import { SpotlightCard } from "@/registry/components/cards/spotlight-card";
 import { TiltCard } from "@/registry/components/cards/tilt-card";
+import { WobbleCard } from "@/registry/components/cards/wobble-card";
 import type { RegistryEntry } from "@/registry/types";
 
 export const cardEntries: RegistryEntry[] = [
@@ -80,6 +84,154 @@ export function Showcase() {
         <h4 className="mt-8 text-2xl font-semibold tracking-tight text-white">组件词典</h4>
         <p className="mt-2 text-sm text-zinc-400">移动鼠标，感受景深。</p>
       </TiltCard>
+    ),
+  },
+  {
+    slug: "electric-border",
+    title: "电流边框卡片",
+    name: "Electric Border",
+    category: "cards",
+    description: "边框与辉光被湍流滤镜反复扭曲，像一圈不稳定的电弧箍住卡片。",
+    designNotes: [
+      "卡片分为两层：底层深色板（含 1px 青色 60% 边框与内外辉光）套 SVG 位移滤镜，上层内容不被扭曲",
+      "滤镜为 feTurbulence（fractalNoise、baseFrequency 0.018、3 倍频）+ feDisplacementMap（scale 14）",
+      "湍流 seed 用 SMIL 每 1.6s 在 6 个值之间离散跳变，形成电弧抖动；内容层正常排版",
+      "辉光：外阴影 0 0 14px 青色 33%、内阴影 0 0 10px 青色 13%；滤镜同时扭曲阴影更添电流感",
+      "prefers-reduced-motion 时不渲染 SMIL 动画，边框静止但保留发光；滤镜 id 由 useId 保证多实例独立",
+    ],
+    deps: [],
+    file: "cards/electric-border.tsx",
+    tags: ["电弧", "滤镜", "科幻", "辉光"],
+    usage: `import { Zap } from "lucide-react";
+import { ElectricBorder } from "@/components/ui/electric-border";
+
+export function Warning() {
+  return (
+    <ElectricBorder className="w-full max-w-sm">
+      <Zap className="size-6 text-cyan-300" />
+      <h3 className="mt-4 text-lg font-semibold">高能预警</h3>
+      <p className="mt-2 text-sm text-zinc-400">这圈边框正通着电，别碰。</p>
+    </ElectricBorder>
+  );
+}`,
+    preview: (
+      <ElectricBorder className="w-full max-w-xs @md:max-w-sm">
+        <Zap className="size-6 text-cyan-300" />
+        <h4 className="mt-4 text-lg font-semibold tracking-tight text-white">高能预警</h4>
+        <p className="mt-2 text-sm leading-relaxed text-zinc-400">
+          这圈边框正通着电，别碰。
+        </p>
+      </ElectricBorder>
+    ),
+  },
+  {
+    slug: "glass-surface",
+    title: "玻璃面板",
+    name: "Glass Surface",
+    category: "cards",
+    description: "毛玻璃底叠顶部光泽、边缘内高光与细噪点，四层质感叠出的厚度感。",
+    designNotes: [
+      "基底：白色 4% 填充 + backdrop-blur(40px) + 1px 白色 10% 边框，rounded-2xl",
+      "光泽层：左上 120%×90% 的径向渐变（白 8%，50% 处透明）叠一道自上而下的线性渐变（白 5%，40% 处消失）",
+      "边缘层：inset 阴影写出顶边 1px 白 12% 高光与整体 24px 白 3% 内泛光",
+      "噪点层：feTurbulence 贴图以 5% 透明度 mix-blend-overlay 平铺，消除毛玻璃的塑料感",
+      "全静态无动画、无 JavaScript；内容层 relative 置于四层之上",
+    ],
+    deps: [],
+    file: "cards/glass-surface.tsx",
+    tags: ["毛玻璃", "质感", "静态", "容器"],
+    usage: `import { Gem } from "lucide-react";
+import { GlassSurface } from "@/components/ui/glass-surface";
+
+export function Feature() {
+  return (
+    <GlassSurface className="w-full max-w-sm p-6">
+      <Gem className="size-6 text-sky-300" />
+      <h3 className="mt-4 text-lg font-semibold">磨砂与光泽</h3>
+      <p className="mt-2 text-sm text-zinc-400">
+        放在任何彩色背景上，玻璃质感都会透出来。
+      </p>
+    </GlassSurface>
+  );
+}`,
+    preview: (
+      <GlassSurface className="w-full max-w-xs p-6 @md:max-w-sm @md:p-8">
+        <Gem className="size-6 text-sky-300" />
+        <h4 className="mt-4 text-lg font-semibold tracking-tight text-white">磨砂与光泽</h4>
+        <p className="mt-2 text-sm leading-relaxed text-zinc-400">
+          放在任何彩色背景上，玻璃质感都会透出来。
+        </p>
+      </GlassSurface>
+    ),
+  },
+  {
+    slug: "glare-card",
+    title: "炫光卡片",
+    name: "Glare Card",
+    category: "cards",
+    description: "一道斜向光带跟随鼠标横扫卡面，顶部边缘同时亮起一条高光线。",
+    designNotes: [
+      "光带是 107° 线性渐变：32% 处透明、48% 处白 14%、64% 处透明，背景尺寸 220%×220%",
+      "background-position 由鼠标写入 CSS 变量 --gx/--gy（直接 setProperty，不触发重渲染）",
+      "光带与顶边高光线默认透明，悬停 300ms 淡入；边框同时从白 10% 提到 25%",
+      "顶部高光线是 inset-x-4 的 1px 横向渐变（两端透明、中间白 40%）",
+      "与聚光灯卡片的径向光斑互补：这里的光是线性、有方向感的",
+    ],
+    deps: [],
+    file: "cards/glare-card.tsx",
+    tags: ["悬停", "光带", "反光", "特性卡"],
+    usage: `import { Wand2 } from "lucide-react";
+import { GlareCard } from "@/components/ui/glare-card";
+
+export function Feature() {
+  return (
+    <GlareCard className="max-w-sm">
+      <Wand2 className="size-6 text-sky-300" />
+      <h3 className="mt-4 text-lg font-semibold">流光掠过</h3>
+      <p className="mt-2 text-sm text-zinc-400">移动鼠标，光带会跟着走。</p>
+    </GlareCard>
+  );
+}`,
+    preview: (
+      <GlareCard className="w-full max-w-xs @md:max-w-sm">
+        <Wand2 className="size-6 text-sky-300" />
+        <h4 className="mt-4 text-lg font-semibold tracking-tight text-white">流光掠过</h4>
+        <p className="mt-2 text-sm leading-relaxed text-zinc-400">移动鼠标，光带会跟着走。</p>
+      </GlareCard>
+    ),
+  },
+  {
+    slug: "wobble-card",
+    title: "果冻卡片",
+    name: "Wobble Card",
+    category: "cards",
+    description: "卡体小幅度倾斜晃动、内部色晕反向漂移，松手弹簧拉回，像按在软胶上。",
+    designNotes: [
+      "父层 perspective 800px；指针归一化坐标映射到 ±3.5° 的 rotateX/rotateY",
+      "弹簧参数 stiffness 160、damping 13、mass 0.6，低阻尼带来果冻般的回弹晃动",
+      "卡内两团色晕（48px 天蓝 25%、56px 紫色 20%，均 blur-3xl）按指针反向位移 12–16px，与卡体形成拉扯感",
+      "离开后所有值弹回 0；prefers-reduced-motion 时完全静止",
+    ],
+    deps: ["motion"],
+    file: "cards/wobble-card.tsx",
+    tags: ["弹簧", "色晕", "果冻", "悬停"],
+    usage: `import { WobbleCard } from "@/components/ui/wobble-card";
+
+export function Showcase() {
+  return (
+    <WobbleCard className="max-w-md">
+      <h3 className="text-2xl font-semibold">软软的容器</h3>
+      <p className="mt-2 text-sm text-zinc-400">移动鼠标试试果冻手感。</p>
+    </WobbleCard>
+  );
+}`,
+    preview: (
+      <WobbleCard className="w-full max-w-xs @md:max-w-md">
+        <h4 className="text-xl font-semibold tracking-tight text-white @md:text-2xl">
+          软软的容器
+        </h4>
+        <p className="mt-2 text-sm text-zinc-400">移动鼠标试试果冻手感。</p>
+      </WobbleCard>
     ),
   },
 ];

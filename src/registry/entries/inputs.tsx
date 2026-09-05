@@ -1,4 +1,5 @@
 import { Zap } from "lucide-react";
+import { ElasticSlider } from "@/registry/components/inputs/elastic-slider";
 import { TierSlider } from "@/registry/components/inputs/tier-slider";
 import type { RegistryEntry } from "@/registry/types";
 
@@ -40,6 +41,40 @@ export function PowerControl() {
         defaultIndex={2}
         icon={<Zap className="size-5" />}
       />
+    ),
+  },
+  {
+    slug: "elastic-slider",
+    title: "弹性滑杆",
+    name: "Elastic Slider",
+    category: "inputs",
+    description: "拖到端点继续拖，整条轨道被拉弯、端点被拽出，松手后弹簧拉回原位。",
+    designNotes: [
+      "轨道与填充是同一条二次贝塞尔曲线（strokeWidth 5、圆头）：M 起点 Q 中点 终点，中点 y 随过冲量上凸",
+      "过冲量由 motion 弹簧驱动（stiffness 240、damping 12、mass 0.7），松手时目标归零、轨道弹回直线，弹簧变化逐帧触发重绘",
+      "过冲上限 30% 轨道宽，中点上凸最深 33px；拖动中滑块从 6.5px 放大到 8px，外圈描边圆同步扩张",
+      "填充为天蓝 #38bdf8 到紫 #a855f7 的横向渐变；数值实时显示在滑块上方",
+      "pointer capture 处理拖拽、touch-none 禁用触摸设备的默认拖拽；role=slider 支持方向键 ±5 与 aria-valuenow",
+    ],
+    deps: ["motion"],
+    file: "inputs/elastic-slider.tsx",
+    usage: `import { ElasticSlider } from "@/components/ui/elastic-slider";
+
+export function VolumeControl() {
+  return (
+    <ElasticSlider
+      label="音量"
+      defaultValue={40}
+      onChange={(value) => console.log("音量", value)}
+    />
+  );
+}`,
+    tags: ["滑杆", "弹性", "SVG", "表单", "交互"],
+    preview: (
+      <div className="flex flex-col items-center gap-4">
+        <ElasticSlider label="弹性张力" defaultValue={55} />
+        <p className="text-xs text-zinc-500">拖到最左或最右，再用力拖一下</p>
+      </div>
     ),
   },
 ];

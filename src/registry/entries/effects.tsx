@@ -1,8 +1,9 @@
-import { Compass, Folder, Mail, Music, Settings, Terminal } from "lucide-react";
+import { Atom, Cloud, Code2, Compass, Database, Folder, GitBranch, Mail, Music, Settings, Terminal } from "lucide-react";
 import { BorderBeam } from "@/registry/components/effects/border-beam";
 import { Dock } from "@/registry/components/effects/dock";
 import { Marquee } from "@/registry/components/effects/marquee";
 import { NumberTicker } from "@/registry/components/effects/number-ticker";
+import { OrbitingCircles } from "@/registry/components/effects/orbiting-circles";
 import type { RegistryEntry } from "@/registry/types";
 
 const marqueeItems = ["Next.js", "Tailwind CSS", "TypeScript", "motion", "React 19", "Lucide", "shiki", "pnpm"];
@@ -198,6 +199,62 @@ export function AppDock() {
           { label: "设置", icon: <Settings /> },
         ]}
       />
+    ),
+  },
+  {
+    slug: "orbiting-circles",
+    title: "环绕轨道",
+    name: "Orbiting Circles",
+    category: "effects",
+    description: "图标沿圆周匀速公转且始终保持正立，叠多层半径与速度可组成星轨。",
+    designNotes: [
+      "轨道项均分圆周：初始角度 = 360° / 项数 × 序号 + 起始角，容器尺寸 = 半径 × 2 + 96px 的正方形",
+      "关键帧为 rotate(角) translateY(半径) rotate(-角)：先转到轨道点、推出半径、再反向转回，保证项自身始终正立",
+      "默认 24s 一圈线性匀速，支持反向（animation-direction: reverse）与任意起始角",
+      "轨道项用 Tailwind 位移类（独立 translate 属性）居中，与关键帧 transform 不叠加冲突",
+      "纯 CSS 实现，尊重 prefers-reduced-motion（静止时轨道项均匀分布在圆周上）",
+    ],
+    deps: [],
+    file: "effects/orbiting-circles.tsx",
+    tags: ["图标", "公转", "科技", "纯 CSS"],
+    usage: `import { Atom, Cloud, Code2, Database, GitBranch } from "lucide-react";
+import { OrbitingCircles } from "@/components/ui/orbiting-circles";
+
+const chip = "flex size-10 items-center justify-center rounded-xl border border-white/10 bg-zinc-900 text-zinc-300";
+
+export function TechOrbit() {
+  return (
+    <OrbitingCircles
+      center={<Atom className="size-8 text-lime-300" />}
+      radius={90}
+      duration={20}
+      items={[
+        <span className={chip}><Code2 className="size-5" /></span>,
+        <span className={chip}><Database className="size-5" /></span>,
+        <span className={chip}><Cloud className="size-5" /></span>,
+        <span className={chip}><GitBranch className="size-5" /></span>,
+      ]}
+    />
+  );
+}`,
+    preview: (
+      <div className="flex items-center justify-center">
+        <OrbitingCircles
+          center={
+            <span className="flex size-14 items-center justify-center rounded-2xl border border-white/10 bg-zinc-900">
+              <Atom className="size-7 text-lime-300" />
+            </span>
+          }
+          radius={86}
+          duration={18}
+          items={[
+            <span className="flex size-10 items-center justify-center rounded-xl border border-white/10 bg-zinc-900 text-zinc-300"><Code2 className="size-5" /></span>,
+            <span className="flex size-10 items-center justify-center rounded-xl border border-white/10 bg-zinc-900 text-zinc-300"><Database className="size-5" /></span>,
+            <span className="flex size-10 items-center justify-center rounded-xl border border-white/10 bg-zinc-900 text-zinc-300"><Cloud className="size-5" /></span>,
+            <span className="flex size-10 items-center justify-center rounded-xl border border-white/10 bg-zinc-900 text-zinc-300"><GitBranch className="size-5" /></span>,
+          ]}
+        />
+      </div>
     ),
   },
 ];

@@ -1,6 +1,7 @@
 import { ArrowRight, Sparkles } from "lucide-react";
 import { MagneticButton } from "@/registry/components/buttons/magnetic-button";
 import { ShimmerButton } from "@/registry/components/buttons/shimmer-button";
+import { StarBorder } from "@/registry/components/buttons/star-border";
 import type { RegistryEntry } from "@/registry/types";
 
 export const buttonEntries: RegistryEntry[] = [
@@ -75,6 +76,38 @@ export function Cta() {
           紫色变体
         </ShimmerButton>
       </div>
+    ),
+  },
+  {
+    slug: "star-border",
+    title: "流星描边按钮",
+    name: "Star Border",
+    category: "buttons",
+    description: "两颗光点沿圆角边框相向环绕，深色实底把它们遮成一圈流动的描边。",
+    designNotes: [
+      "按钮外层是 1px 内边距、overflow-hidden 的胶囊容器；内层深底板（zinc-950）盖住中心，只露出 1px 边框区",
+      "两根从中心出发的 1px 旋臂绕中心旋转，臂端各挂一颗 8px 圆光点：一颗纯白、一颗天蓝",
+      "光点带 8px 半径、70% 透明度同色的阴影光晕；两臂同速 5s 一圈、方向相反，第二臂负延迟半个周期错开",
+      "纯 CSS 关键帧，尊重 prefers-reduced-motion（静止时两颗光点停在边框两侧）",
+    ],
+    deps: [],
+    file: "buttons/star-border.tsx",
+    tags: ["CTA", "描边", "光点", "纯 CSS"],
+    usage: `import { ArrowRight } from "lucide-react";
+import { StarBorder } from "@/components/ui/star-border";
+
+export function Cta() {
+  return (
+    <StarBorder>
+      立即体验
+      <ArrowRight className="size-4" />
+    </StarBorder>
+  );
+}`,
+    preview: (
+      <StarBorder className="@md:text-base @md:px-9 @md:py-4">
+        立即体验
+      </StarBorder>
     ),
   },
 ];
