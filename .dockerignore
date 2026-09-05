@@ -1,0 +1,14 @@
+# 构建产物与依赖在容器内重新生成
+node_modules
+.next
+out
+tsconfig.tsbuildinfo
+
+# 版本库与 IDE 杂项
+.git
+.github
+.idea
+.claude
+.agent-yes
+Dockerfile
+docker-compose.yml

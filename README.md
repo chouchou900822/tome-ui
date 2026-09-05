@@ -14,18 +14,12 @@ Tome（意为「典籍」）是一个开源的「组件词典」。每个组件�
 - **⌘K 命令面板**：按名称、描述、标签模糊搜索，方向键选择，回车跳转
 - **分类筛选**：与 URL 同步（`/?category=text`），可直接分享
 - **给 AI 用的接口**：`/llms.txt` 索引全部组件；`/api/prompt/{slug}` 直接返回 Markdown 提示词，AI 代理或 `curl` 都能拉取
+- **MCP 服务器**：本地 stdio 与远程 streamable-http 两种传输，AI 客户端可直接查询组件列表与提示词
 - **全静态**：`next build` 产出纯静态页面，可部署到任何静态托管
 
-## 内置组件（16 个）
+## 在线体验
 
-| 分类 | 组件 |
-| --- | --- |
-| 文字动效 | 文字显现 Text Reveal · 闪光文字 Shiny Text · 打字机 Typewriter · 解码文字 Decrypt Text |
-| 按钮 | 磁吸按钮 Magnetic Button · 流光按钮 Shimmer Button |
-| 卡片 | 聚光灯卡片 Spotlight Card · 3D 倾斜卡片 Tilt Card |
-| 背景 | 极光背景 Aurora Background · 交互点阵 Dot Grid · 网格光束 Grid Beams |
-| 特效 | 无限跑马灯 Marquee · 数字滚动 Number Ticker · 边框光束 Border Beam · 程序坞 Dock |
-| 输入控件 | 档位滑杆 Tier Slider |
+全部组件可在官网实时预览与交互：**https://tome-ui-seven.vercel.app/** —— 每张卡片都是真实运行的组件，悬停、滚动、点击皆可交互。
 
 所有组件均为 React + TypeScript + Tailwind CSS v4，尊重 `prefers-reduced-motion`，只依赖 `clsx`、`tailwind-merge`，部分组件额外依赖 `motion`。
 
@@ -38,6 +32,50 @@ pnpm build      # 生产构建（全静态）
 pnpm typecheck  # TypeScript 严格检查
 ```
 
+## Docker
+
+容器内同时运行静态站点（nginx 伺服 `out/`）与 MCP 服务器（streamable-http），启动后日志打印两个访问地址：
+
+```bash
+# 方式一：直接使用 Docker Hub 镜像
+docker run -d --name tome -p 3000:3000 -p 8787:8787 edisonguo/tome-ui:latest
+
+# 方式二：本地构建镜像
+docker build -t tome-ui .
+docker run -d --name tome -p 3000:3000 -p 8787:8787 tome-ui
+```
+
+- 页面地址：`http://localhost:3000/`
+- MCP 地址：`http://localhost:8787/mcp`（AI 客户端接入方式见下文「MCP 服务器」）
+- 查看启动日志：`docker logs -f tome`
+- 容器内监听端口可用环境变量 `WEB_PORT` / `MCP_PORT` 覆盖，`-p` 端口映射需同步调整
+
+## MCP 服务器
+
+内置一个 MCP（Model Context Protocol）服务器，把整个词典暴露给 AI 客户端，提供两个工具：
+
+- `list_components`：列出全部组件（编号、slug、中英文名、分类、描述、标签、依赖），支持按分类与关键词过滤
+- `get_component_prompt`：按 slug 返回该组件的完整 AI 提示词（目标 → 前置条件 → 设计要点 → 源码 → 用法 → 验收标准）
+
+```bash
+pnpm mcp                                             # 本地 stdio 传输（默认）
+pnpm mcp:http                                        # streamable-http，默认 http://127.0.0.1:8787/mcp
+pnpm mcp:http -- --host 0.0.0.0 --port 9000          # 自定义监听地址（用于远程部署）
+```
+
+在 Claude Code 中接入：
+
+```bash
+# 本地 stdio（Windows 下用 cmd /c 包装 pnpm 的 .cmd shim）
+claude mcp add tome -- cmd /c pnpm mcp               # Windows
+claude mcp add tome -- pnpm mcp                      # macOS / Linux
+
+# 远程 streamable-http（服务器上 clone 仓库、pnpm install、pnpm mcp:http 后）
+claude mcp add --transport http tome http://<host>:8787/mcp
+```
+
+Cursor、Windsurf 等 MCP 客户端同理配置。词典条目变动后 MCP 数据自动同步，无需任何维护。
+
 ## 技术栈
 
 Next.js 16（App Router）· React 19 · Tailwind CSS v4 · motion · shiki · lucide-react · Geist 字体
@@ -45,20 +83,26 @@ Next.js 16（App Router）· React 19 · Tailwind CSS v4 · motion · shiki · l
 ## 项目结构
 
 ```
-src/
-├── app/                    # 路由：首页、/c/[slug] 详情、/llms.txt、/api/prompt/[slug]
-├── components/
-│   ├── site/               # 页头、页脚、命令面板、复制按钮
-│   ├── home/               # 首屏、使用流程
-│   ├── gallery/            # 筛选栏、组件卡片、预览舞台
-│   └── detail/             # 详情页预览与代码选项卡
-├── lib/                    # prompt 生成、源码读取、高亮、搜索
-└── registry/               # 词典本体
-    ├── components/<分类>/  # 组件源码（会原样写入提示词）
-    ├── entries/<分类>.tsx  # 元数据、设计要点、用法、演示节点
-    ├── categories.ts
-    ├── types.ts
-    └── index.ts
+├── src/
+│   ├── app/                    # 路由：首页、/c/[slug] 详情、/llms.txt、/api/prompt/[slug]
+│   ├── components/
+│   │   ├── site/               # 页头、页脚、命令面板、复制按钮
+│   │   ├── home/               # 首屏、使用流程
+│   │   ├── gallery/            # 筛选栏、组件卡片、预览舞台
+│   │   └── detail/             # 详情页预览与代码选项卡
+│   ├── lib/                    # prompt 生成、源码读取、高亮、搜索
+│   └── registry/               # 词典本体
+│       ├── components/<分类>/  # 组件源码（会原样写入提示词）
+│       ├── entries/<分类>.tsx  # 元数据、设计要点、用法、演示节点
+│       ├── categories.ts
+│       ├── types.ts
+│       └── index.ts
+├── mcp/                        # MCP 服务器（stdio 与 streamable-http 双传输）
+│   ├── index.ts                # 入口：解析 --http / --host / --port
+│   ├── server.ts               # 工具注册：list_components、get_component_prompt
+│   ├── http.ts                 # 无状态 streamable-http 传输
+│   └── data.ts                 # 运行时读取 registry 元数据与组件源码
+└── docker/                     # 容器封装：nginx 站点配置与入口脚本（配合根目录 Dockerfile）
 ```
 
 ## 添加一个组件
