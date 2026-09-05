@@ -24,9 +24,6 @@ export function SiteHeader() {
           >
             浏览组件
           </Link>
-          <Link href="/llms.txt" className="hidden font-mono text-xs text-mute transition-colors hover:text-ink md:inline">
-            llms.txt
-          </Link>
           <SearchTrigger />
           <a
             href={site.github}
