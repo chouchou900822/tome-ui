@@ -181,7 +181,10 @@ export function TierSlider({
   };
 
   const handlePointerDown = (e: PointerEvent<HTMLDivElement>) => {
+    // 阻止长按触发浏览器默认的文本选择 / 拖拽，避免 pointercancel 中断拖动
+    e.preventDefault();
     e.currentTarget.setPointerCapture(e.pointerId);
+    e.currentTarget.focus();
     rootRef.current?.setAttribute("data-drag", "true");
     valueRef.current = posToValue(e.clientX);
   };
@@ -256,7 +259,7 @@ export function TierSlider({
           aria-valuemax={tiers - 1}
           aria-valuenow={startIndex}
           aria-valuetext={levels[startIndex]}
-          className="tier-slider absolute inset-0 cursor-pointer touch-none outline-none"
+          className="tier-slider absolute inset-0 cursor-pointer touch-none select-none outline-none"
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={endDrag}
