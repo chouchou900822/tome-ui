@@ -10,7 +10,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 # Tome 组件词典 · 贡献规则
 
-项目是仿 21st.dev 的「组件词典」：每个前端组件附带可复制给 AI 编程助手的中文提示词。`pnpm typecheck` 校验类型（严格模式），`pnpm build` 依赖 `next.config.ts` 的 `output: "export"` 把全站静态导出到 `out/`。
+项目是一个「组件词典」：每个前端组件附带可复制给 AI 编程助手的中文提示词。`pnpm typecheck` 校验类型（严格模式），`pnpm build` 依赖 `next.config.ts` 的 `output: "export"` 把全站静态导出到 `out/`。
 
 ## 添加一个组件
 
