@@ -32,7 +32,7 @@ export function Meteors({ children, className, count = 14 }: MeteorsProps) {
         <span
           key={i}
           aria-hidden
-          className="meteors-fall pointer-events-none absolute h-px w-[120px] rounded-full bg-gradient-to-r from-white/70 to-transparent"
+          className="meteors-fall pointer-events-none absolute h-px w-[120px] rounded-full bg-gradient-to-r from-white/70 to-transparent opacity-0"
           style={meteorStyle(i)}
         >
           <span className="absolute -left-0.5 top-1/2 size-[3px] -translate-y-1/2 rounded-full bg-white shadow-[0_0_6px_2px_rgba(255,255,255,0.35)]" />
@@ -41,10 +41,11 @@ export function Meteors({ children, className, count = 14 }: MeteorsProps) {
       <div className="relative">{children}</div>
       <style href="meteors-keyframes" precedence="medium">
         {`@media (prefers-reduced-motion: no-preference) {
-  .meteors-fall { animation: meteors-fall linear infinite; }
+  .meteors-fall { animation: meteors-fall linear infinite backwards; }
 }
 @keyframes meteors-fall {
-  0% { transform: rotate(215deg) translateX(0); opacity: 1; }
+  0% { transform: rotate(215deg) translateX(0); opacity: 0; }
+  15% { opacity: 1; }
   70% { opacity: 1; }
   100% { transform: rotate(215deg) translateX(-480px); opacity: 0; }
 }`}

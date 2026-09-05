@@ -119,7 +119,8 @@ export function Hero() {
     description: "细长光条头亮尾散，从右上向左下错峰坠落，安静夜空里的一阵流星。",
     designNotes: [
       "每条流星是 120px×1px 的圆角细条，白色 70% 向右渐隐；头部 3px 白点带 6px 半径的白 35% 光晕",
-      "位移沿 215deg 方向推进 480px，前 70% 保持全亮，随后快速淡出，时长 3.5–6.5s 各不相同",
+      "位移沿 215deg 方向推进 480px，前 15% 淡入、70% 前保持全亮、随后淡出，时长 3.5–6.5s 各不相同",
+      "animation-fill-mode: backwards 且基础态 opacity-0：错峰延迟期与 prefers-reduced-motion 下均不可见，避免横条裸露",
       "数量默认 14 条，top/left/延迟/时长由索引经确定性伪随机派生，服务端与客户端渲染一致",
       "纯 CSS 关键帧，无限循环，尊重 prefers-reduced-motion；容器 isolate + overflow-hidden",
     ],
