@@ -4,12 +4,13 @@ import { cardEntries } from "./entries/cards";
 import { effectEntries } from "./entries/effects";
 import { effectMoreEntries } from "./entries/effects-more";
 import { inputEntries } from "./entries/inputs";
+import { navigationEntries } from "./entries/navigation";
 import { scrollEntries } from "./entries/scroll";
 import { textEntries } from "./entries/text";
 import { textureEntries } from "./entries/textures";
 import type { CategoryId, RegistryEntry, RegistrySummary } from "./types";
 
-export { categories, getCategory } from "./categories";
+export { categories, getCategory, formatIndex } from "./categories";
 export type { Category, CategoryId, RegistryEntry, RegistrySummary } from "./types";
 
 /** 词典全部条目，顺序即编号顺序 */
@@ -22,6 +23,7 @@ export const registry: readonly RegistryEntry[] = [
   ...effectEntries,
   ...effectMoreEntries,
   ...inputEntries,
+  ...navigationEntries,
   ...textureEntries,
 ];
 
@@ -41,9 +43,4 @@ export function getEntriesByCategory(category: CategoryId): RegistryEntry[] {
 export function toSummary(entry: RegistryEntry): RegistrySummary {
   const { preview: _preview, previewClassName: _previewClassName, ...summary } = entry;
   return summary;
-}
-
-/** 两位数编号，例如 03 */
-export function formatIndex(index: number): string {
-  return String(index + 1).padStart(2, "0");
 }
