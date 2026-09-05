@@ -10,7 +10,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 # Tome 组件词典 · 贡献规则
 
-项目是仿 21st.dev 的「组件词典」：每个前端组件附带可复制给 AI 编程助手的中文提示词。`pnpm typecheck` 校验类型（严格模式），`pnpm build` 产出全静态页面。
+项目是仿 21st.dev 的「组件词典」：每个前端组件附带可复制给 AI 编程助手的中文提示词。`pnpm typecheck` 校验类型（严格模式），`pnpm build` 依赖 `next.config.ts` 的 `output: "export"` 把全站静态导出到 `out/`。
 
 ## 添加一个组件
 
@@ -24,8 +24,9 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - 使用 hooks / 浏览器 API / motion hooks 的组件，文件首行加 `"use client"`；纯 CSS 动画组件不加
 - TypeScript 严格模式：显式 props interface；禁止 `any` 与 `@ts-ignore`；具名导出 `export function`，函数名对应条目 `name`
 - 动画与可访问性：
-  - CSS 动画一律加 `motion-safe:` 前缀
-  - JS 驱动的动画用 `useReducedMotion()` 提前返回最终状态
+  - Tailwind 类驱动的 CSS 动画加 `motion-safe:` 前缀；`<style>` 内联关键帧则把动画应用规则包进 `@media (prefers-reduced-motion: no-preference)`
+  - JS 驱动的动画读取 prefers-reduced-motion 并跳到终态（引 motion 时用 `useReducedMotion()`，未引时用 `matchMedia`）
+  - 手写 CSS 的 `transform` 会与 Tailwind v4 位移类（走独立 `translate` 属性）叠加产生双重位移，动效优先用独立 `scale` / `rotate` 属性
   - 装饰层加 `aria-hidden`；拆分文本的组件外层保留完整 `aria-label`
 - 关键帧内联：`<style href="<slug>-keyframes" precedence="medium">`，`href` 全站唯一（React 19 自动去重并提升到 head）。禁止把关键帧写进 `globals.css`
 - 水合安全：服务端首帧与客户端首帧必须一致；随机性只能发生在 `useEffect` 之后（参考 `DecryptText`）；渲染路径上不读 `window`
@@ -53,10 +54,12 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 ### 3. 验证
 
 ```bash
-pnpm typecheck && pnpm build   # 构建后静态页面数应 +1
-pnpm dev                       # 逐项检查下列清单
+pnpm typecheck
+pnpm build
+pnpm dev   # 逐项检查下列清单（命令分行，兼容不支持 && 的终端）
 ```
 
+- [ ] 构建后 `out/c/<slug>.html` 已生成——以 `out/` 产物判断导出成败；`next.config.ts` 丢失时构建日志仍报成功但不更新 `out/`
 - [ ] 首页卡片：小舞台预览与悬停交互正常，描述两行内可读
 - [ ] `/c/<slug>`：大舞台预览正常，「重播」可重放入场动画
 - [ ] 「提示词」选项卡：designNotes 数值准确、源码完整、usage 可运行
@@ -65,6 +68,8 @@ pnpm dev                       # 逐项检查下列清单
 - [ ] 浏览器控制台无报错、无水合警告
 
 ### 新增一个分类
+
+现有分类语义都不贴切时才新建（分类即目录，也是首页筛选与词典检索的边界），不要把组件硬塞进无关类目。
 
 1. `src/registry/types.ts`：`CategoryId` 联合类型加新 id
 2. `src/registry/categories.ts`：`categories` 数组加一条（id、中文 `label`、英文 `code`、`description`）——首页筛选按钮与 `llms.txt` 章节标题来自这里
