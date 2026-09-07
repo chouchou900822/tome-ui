@@ -154,8 +154,8 @@ export function Hero() {
     designNotes: [
       "默认 5 圈正圆环，1px 白 25% 描边，宽度撑满容器（上限 640px）并保持 1:1",
       "每圈从 scale 0.15、不透明度 0.55 扩散到 scale 1、完全透明，一轮 4.5s，线性匀速",
-      "圈与圈之间按总时长的等分错开延迟，画面任意时刻都有 5 圈处于不同相位",
-      "动画走独立 scale 属性而非 transform，避免与 Tailwind 位移类叠加；尊重 prefers-reduced-motion",
+      "圈与圈之间以总时长等分的负延迟错开，默认依次为 0、-0.9、-1.8、-2.7、-3.6s，首帧即呈现不同扩散进度",
+      "圆环默认不透明度为 0，避免动画生效前叠出白圈；动画走独立 scale 属性，开启 prefers-reduced-motion 时保持透明",
     ],
     deps: [],
     file: "backgrounds/ripple.tsx",

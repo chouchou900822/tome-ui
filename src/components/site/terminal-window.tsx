@@ -19,23 +19,23 @@ export function TerminalWindow({ title, code, html, className, beam = true }: Te
   return (
     <div
       className={cn(
-        "relative overflow-hidden rounded-2xl border border-line bg-panel shadow-[0_24px_80px_-24px_rgba(0,0,0,0.8)]",
+        "surface-panel relative min-w-0 overflow-hidden shadow-[0_24px_80px_-30px_rgba(0,0,0,0.7)]",
         className,
       )}
     >
-      <div className="flex items-center justify-between gap-3 border-b border-line px-4 py-2.5">
+      <div className="flex items-center justify-between gap-3 border-b border-line bg-white/[0.02] px-4 py-2.5">
         <div className="flex min-w-0 items-center gap-3">
           <span aria-hidden className="flex shrink-0 items-center gap-1.5">
-            <span className="size-2.5 rounded-full bg-[#ff5f57]" />
-            <span className="size-2.5 rounded-full bg-[#febc2e]" />
-            <span className="size-2.5 rounded-full bg-[#28c840]" />
+            <span className="size-2 rounded-full bg-white/20" />
+            <span className="size-2 rounded-full bg-white/12" />
+            <span className="size-2 rounded-full bg-white/8" />
           </span>
-          <span className="truncate font-mono text-[11px] text-mute">{title}</span>
+          <span className="truncate font-mono text-[10px] text-mute">{title}</span>
         </div>
         <CopyButton text={code} label="复制命令" iconOnly className="my-1 size-7" />
       </div>
       <div
-        className="code-surface overflow-auto text-[13px]"
+        className="code-surface overflow-auto bg-black/15 text-[13px]"
         dangerouslySetInnerHTML={{ __html: html }}
       />
       {beam ? <BorderBeam size={80} duration={9} /> : null}

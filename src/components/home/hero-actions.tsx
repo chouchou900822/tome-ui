@@ -1,27 +1,26 @@
 "use client";
 
 import { ArrowDown, ArrowUpRight } from "lucide-react";
+import { useReducedMotion } from "motion/react";
 import { MagneticButton } from "@/registry/components/buttons/magnetic-button";
-import { ShimmerButton } from "@/registry/components/buttons/shimmer-button";
 
 interface HeroActionsProps {
   github: string;
 }
 
-/** 首屏两个 CTA，直接复用词典里的按钮组件 */
 export function HeroActions({ github }: HeroActionsProps) {
+  const reduceMotion = useReducedMotion();
+
   return (
-    <div className="flex flex-wrap items-center gap-5">
-      <MagneticButton
-        onClick={() => document.getElementById("gallery")?.scrollIntoView({ behavior: "smooth" })}
-      >
-        浏览词典
-        <ArrowDown className="size-4" />
+    <div className="flex flex-wrap items-center gap-5 sm:gap-7">
+      <MagneticButton strength={reduceMotion ? 0 : 0.15} padding={10}
+        className="bg-accent px-6 py-3.5 text-accent-ink shadow-[0_4px_24px_-12px_#d7ff3c80] hover:bg-[#e3ff7c]"
+        onClick={() => document.getElementById("gallery")?.scrollIntoView({ behavior: reduceMotion ? "instant" : "smooth" })}>
+        探索组件<ArrowDown aria-hidden className="ml-3 size-4" />
       </MagneticButton>
-      <ShimmerButton onClick={() => window.open(github, "_blank", "noreferrer")}>
-        GitHub
-        <ArrowUpRight className="size-4" />
-      </ShimmerButton>
+      <a href={github} target="_blank" rel="noreferrer" className="group inline-flex items-center gap-2 text-xs text-mute transition-colors hover:text-ink">
+        在 GitHub 上查看<ArrowUpRight aria-hidden className="size-3.5 motion-safe:transition-transform motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:translate-x-0.5" />
+      </a>
     </div>
   );
 }

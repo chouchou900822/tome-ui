@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
-import { ArrowRight, Bot, Globe, SlidersHorizontal } from "lucide-react";
-import Link from "next/link";
+import { Bot, Globe, SlidersHorizontal } from "lucide-react";
 import { CodeTabs, type CodeTab } from "@/components/detail/code-tabs";
 import { DockerHero } from "@/components/docker/docker-hero";
-import { CopyButton } from "@/components/site/copy-button";
-import { SectionHeading } from "@/components/site/section-heading";
+import { GuideSection } from "@/components/docs/guide-section";
+import { GuideOutro } from "@/components/docs/guide-outro";
 import { TerminalWindow } from "@/components/site/terminal-window";
 import { highlight } from "@/lib/highlight";
 import { site } from "@/lib/site";
 import { SpotlightCard } from "@/registry/components/cards/spotlight-card";
-import { Marquee } from "@/registry/components/effects/marquee";
 
 const RUN_CMD = `docker run -d --name tome \\
   -p 3000:3000 -p 8787:8787 \\
@@ -103,92 +101,37 @@ export default async function DockerPage() {
 
   return (
     <>
-      <DockerHero terminal={{ title: "bash — 一键启动", code: RUN_CMD, html: runHtml }} />
+      <DockerHero terminal={{ title: "终端 — 一键启动", code: RUN_CMD, html: runHtml }} />
+      <GuideSection id="install" no="01" label="获取镜像" title="两种方式，一样开箱即用。"
+        description="直接拉取镜像，或从源码构建自己的版本。一个容器，同时提供组件站点与 MCP 服务。">
+        <CodeTabs tabs={tabs} className="mx-auto max-w-5xl" />
+      </GuideSection>
 
-      <section className="border-b border-line">
-        <div className="mx-auto max-w-[1440px] px-5 pb-24 pt-16 md:px-8">
-          <SectionHeading
-            no="01"
-            label="获取镜像"
-            title="两种方式，同一个容器"
-            description="容器内同时运行静态站点（nginx 伺服 out/）与 MCP 服务器（streamable-http），启动即双服务就绪。"
-          />
-          <CodeTabs tabs={tabs} />
+      <GuideSection id="services" no="02" label="容器服务" title="为人，也为 AI 准备。"
+        description="页面与接口各有一个入口。浏览器用来探索，AI 客户端用来取用，端口可以按需要调整。">
+        <div className="grid gap-5 md:grid-cols-3">
+          {services.map((service, index) => (
+            <SpotlightCard key={service.title} color="rgba(215,255,60,0.08)" className="h-full bg-panel p-6">
+              <div className="flex items-center justify-between">
+                <span className="grid size-11 place-items-center rounded-xl border border-accent/15 bg-accent/[0.04]"><service.icon aria-hidden className="size-4.5 text-accent/80" /></span>
+                <span className="font-mono text-[10px] text-mute/50">0{index + 1}</span>
+              </div>
+              <h3 className="mt-6 text-base font-medium tracking-tight">{service.title}</h3>
+              <p className="mt-3 text-xs leading-7 text-mute">{service.body}</p>
+              <p className="mt-5 break-all rounded-lg border border-line bg-black/20 px-3 py-3 font-mono text-[10px] leading-5 text-mute/75">{service.meta}</p>
+            </SpotlightCard>
+          ))}
         </div>
-      </section>
+      </GuideSection>
 
-      <section className="border-b border-line">
-        <div className="mx-auto max-w-[1440px] px-5 pb-24 pt-16 md:px-8">
-          <SectionHeading
-            no="02"
-            label="容器内部"
-            title="容器里跑着什么"
-            description="Alpine 底座上的双进程封装：页面与接口各守一个端口，互不干扰、同时就绪。"
-          />
-          <div className="grid gap-5 md:grid-cols-3">
-            {services.map((s) => {
-              const Icon = s.icon;
-              return (
-                <SpotlightCard key={s.title} className="p-6">
-                  <div className="flex items-center justify-between">
-                    <span className="grid size-10 place-items-center rounded-xl border border-white/10 bg-white/5">
-                      <Icon className="size-4.5 text-accent" />
-                    </span>
-                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-mute">
-                      {s.meta}
-                    </span>
-                  </div>
-                  <h3 className="mt-6 text-lg font-semibold tracking-tight">{s.title}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-mute">{s.body}</p>
-                </SpotlightCard>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+      <GuideSection id="operations" no="03" label="日常维护" title="常用命令，随手可查。"
+        description="查看日志、重启容器，或调整监听端口。日常需要的操作，都收在这里。">
+        <TerminalWindow title="终端 — 运维速查" code={OPS_SNIPPET} html={opsHtml} beam={false} className="mx-auto max-w-5xl" />
+      </GuideSection>
 
-      <section className="border-b border-line">
-        <div className="mx-auto max-w-[1440px] px-5 pb-24 pt-16 md:px-8">
-          <SectionHeading
-            no="03"
-            label="运维速查"
-            title="日常就这几条命令"
-            description="无数据库、无状态、无配置文件。容器挂了重启即可，词典内容跟着镜像走。"
-          />
-          <TerminalWindow title="bash — 运维速查" code={OPS_SNIPPET} html={opsHtml} beam={false} className="mx-auto max-w-3xl" />
-        </div>
-      </section>
-
-      <section>
-        <div className="border-b border-line py-6">
-          <Marquee duration={28} gap="3.5rem">
-            {highlights.map((h) => (
-              <span key={h} className="flex items-center gap-14">
-                <span className="font-mono text-xs uppercase tracking-[0.3em] text-mute">{h}</span>
-                <span aria-hidden className="size-1.5 rotate-45 bg-accent" />
-              </span>
-            ))}
-          </Marquee>
-        </div>
-        <div className="mx-auto max-w-[1440px] px-5 py-28 text-center md:px-8">
-          <h2 className="text-3xl font-semibold tracking-tight md:text-5xl">
-            镜像已备好，就等你按下回车。
-          </h2>
-          <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-mute">
-            一条命令的时间，你的团队就有自己的组件词典——以及一个随叫随到的 AI 组件接口。
-          </p>
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <CopyButton text={RUN_CMD} label="复制启动命令" variant="primary" />
-            <Link
-              href="/mcp"
-              className="inline-flex h-9 items-center gap-1 rounded-full border border-line px-4 text-xs text-mute transition-colors hover:border-white/20 hover:text-ink"
-            >
-              下一页：MCP 接入
-              <ArrowRight className="size-3.5" />
-            </Link>
-          </div>
-        </div>
-      </section>
+      <GuideOutro highlights={highlights} title="你的组件词典，随时就绪。"
+        description="一条命令，为自己和团队留下一份随时可用的灵感库。部署完成后，再把 MCP 接入你的工作流。"
+        command={RUN_CMD} copyLabel="复制启动命令" href="/mcp" linkLabel="继续了解 MCP" />
     </>
   );
 }

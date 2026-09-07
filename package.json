@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && node --experimental-strip-types src/build/finalize-export.mts",
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "mcp": "tsx mcp/index.ts",

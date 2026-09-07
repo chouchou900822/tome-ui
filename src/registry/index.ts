@@ -2,7 +2,7 @@ import { backgroundEntries } from "./entries/backgrounds";
 import { buttonEntries } from "./entries/buttons";
 import { cardEntries } from "./entries/cards";
 import { effectEntries } from "./entries/effects";
-import { effectMoreEntries } from "./entries/effects-more";
+import { effectMoreEntries } from "./entries/effects/additional";
 import { inputEntries } from "./entries/inputs";
 import { navigationEntries } from "./entries/navigation";
 import { scrollEntries } from "./entries/scroll";

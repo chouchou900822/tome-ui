@@ -6,7 +6,7 @@ import { useState } from "react";
 import { ComponentCard, type GalleryItem } from "@/components/gallery/component-card";
 import type { Category } from "@/registry/types";
 
-const GRID = "grid gap-5 md:grid-cols-2 xl:grid-cols-3";
+const GRID = "grid gap-4 md:grid-cols-2 xl:grid-cols-3";
 
 interface GallerySectionProps {
   /** 节序号，从 0 开始 */
@@ -33,24 +33,24 @@ export function GallerySection({ ordinal, category, items, limit = 8, startExpan
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      className="scroll-mt-20 border-t border-line py-10 first:border-t-0 first:pt-0"
+      className="scroll-mt-56 border-t border-line py-10 first:border-t-0 first:pt-0 lg:scroll-mt-24"
     >
       <div className="flex items-end justify-between gap-6">
         <div>
-          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-mute">
-            <span className="font-pixel text-accent">{String(ordinal + 1).padStart(2, "0")}</span>
+          <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-mute/70">
+            <span className="text-accent/80">{String(ordinal + 1).padStart(2, "0")}</span>
             <span> — </span>
             <span>{category.code}</span>
             <span> · {String(items.length).padStart(2, "0")} 项</span>
           </p>
-          <h3 className="mt-3 text-2xl font-semibold tracking-tight md:text-3xl">{category.label}</h3>
-          <p className="mt-2 max-w-lg text-sm leading-relaxed text-mute">{category.description}</p>
+          <h3 className="mt-2.5 text-xl font-medium tracking-tight md:text-2xl">{category.label}</h3>
+          <p className="mt-2 max-w-lg text-xs leading-6 text-mute">{category.description}</p>
         </div>
-        {rest > 0 ? (
+        {items.length > limit ? (
           <button
             type="button"
             onClick={() => setExpanded((prev) => !prev)}
-            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-line px-3.5 py-1.5 text-xs text-mute transition-colors hover:border-white/20 hover:text-ink"
+            className="button-secondary h-9 shrink-0 px-3.5 text-xs"
           >
             {expanded ? <ChevronsUp className="size-3.5" /> : <ChevronsDown className="size-3.5" />}
             {expanded ? "收起" : `展开其余 ${rest} 项`}

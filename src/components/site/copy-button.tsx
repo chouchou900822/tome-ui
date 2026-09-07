@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Copy } from "lucide-react";
+import { Check, Copy, TriangleAlert } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -9,56 +9,43 @@ interface CopyButtonProps {
   label?: string;
   doneLabel?: string;
   className?: string;
-  /** primary 为强调色主按钮，ghost 为半透明次按钮 */
   variant?: "primary" | "ghost";
-  /** 紧凑模式：只显示图标 */
   iconOnly?: boolean;
 }
 
-export function CopyButton({
-  text,
-  label = "复制提示词",
-  doneLabel = "已复制",
-  className,
-  variant = "ghost",
-  iconOnly = false,
-}: CopyButtonProps) {
-  const [copied, setCopied] = useState(false);
+type CopyState = "idle" | "done" | "error";
+
+export function CopyButton({ text, label = "复制提示词", doneLabel = "已复制", className, variant = "ghost", iconOnly = false }: CopyButtonProps) {
+  const [state, setState] = useState<CopyState>("idle");
 
   useEffect(() => {
-    if (!copied) return;
-    const timer = window.setTimeout(() => setCopied(false), 2000);
+    if (state === "idle") return;
+    const timer = window.setTimeout(() => setState("idle"), state === "error" ? 3000 : 2000);
     return () => window.clearTimeout(timer);
-  }, [copied]);
+  }, [state]);
 
-  const copy = () => {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => setCopied(true))
-      .catch((error: unknown) => console.error("复制失败", error));
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setState("done");
+    } catch {
+      setState("error");
+    }
   };
 
-  const Icon = copied ? Check : Copy;
-  const tone = copied
-    ? "border-accent bg-accent text-accent-ink"
-    : variant === "primary"
-      ? "border-accent bg-accent text-accent-ink hover:brightness-110"
-      : "border-line bg-white/5 text-ink hover:border-white/20 hover:bg-white/10";
+  const Icon = state === "done" ? Check : state === "error" ? TriangleAlert : Copy;
+  const feedback = state === "done" ? doneLabel : state === "error" ? "复制失败，请重试" : label;
 
   return (
-    <button
-      type="button"
-      onClick={copy}
-      aria-label={copied ? doneLabel : label}
+    <button type="button" onClick={() => void copy()} aria-label={feedback} aria-live="polite" title={feedback}
       className={cn(
-        "inline-flex items-center gap-2 rounded-full border text-xs font-medium transition-all duration-300",
-        tone,
-        iconOnly ? "size-8 justify-center" : "px-3.5 py-2",
+        iconOnly ? "icon-button" : variant === "primary" ? "button-primary" : "button-secondary h-9 px-3.5 text-xs",
+        state === "done" && "border-accent/35 bg-accent/10 text-accent hover:bg-accent/15",
+        state === "error" && "border-red-400/30 bg-red-400/10 text-red-300 hover:bg-red-400/15",
         className,
-      )}
-    >
-      <Icon className="size-3.5" />
-      {iconOnly ? null : <span>{copied ? doneLabel : label}</span>}
+      )}>
+      <Icon aria-hidden className="size-3.5 shrink-0" />
+      {iconOnly ? null : <span>{feedback}</span>}
     </button>
   );
 }

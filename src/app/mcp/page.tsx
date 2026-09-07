@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
-import { ArrowUpRight, FileText, List } from "lucide-react";
+import { FileText, List } from "lucide-react";
 import { ChatDemo } from "@/components/mcp/chat-demo";
 import { McpHero } from "@/components/mcp/mcp-hero";
-import { CopyButton } from "@/components/site/copy-button";
-import { SectionHeading } from "@/components/site/section-heading";
+import { GuideSection } from "@/components/docs/guide-section";
+import { GuideOutro } from "@/components/docs/guide-outro";
 import { CodeTabs, type CodeTab } from "@/components/detail/code-tabs";
 import { highlight } from "@/lib/highlight";
 import { site } from "@/lib/site";
-import { Marquee } from "@/registry/components/effects/marquee";
 import { SpotlightCard } from "@/registry/components/cards/spotlight-card";
 
 const ADD_CMD = "claude mcp add tome -- pnpm mcp";
@@ -103,104 +102,49 @@ export default async function McpPage() {
   return (
     <>
       <McpHero addCommand={ADD_CMD} />
+      <GuideSection id="tools" no="01" label="两个工具" title="目录与内页，刚好够用。"
+        description="先找到适合的组件，再取回完整提示词。两次调用，把检索、设计与实现接在一起。">
+        <div className="grid gap-5 md:grid-cols-2">
+          {tools.map((tool, index) => (
+            <SpotlightCard key={tool.name} color="rgba(215,255,60,0.08)" className="bg-panel p-6 sm:p-8">
+              <div className="flex items-center justify-between gap-3">
+                <span className="grid size-11 place-items-center rounded-xl border border-accent/15 bg-accent/[0.04]"><tool.icon aria-hidden className="size-4.5 text-accent/80" /></span>
+                <span className="font-mono text-[10px] text-mute/50">TOOL / 0{index + 1}</span>
+              </div>
+              <h3 className="mt-7 text-xl font-medium tracking-tight">{tool.title}</h3>
+              <p className="mt-2 break-all font-mono text-xs text-accent/80">{tool.name}</p>
+              <p className="mt-4 text-sm leading-7 text-mute">{tool.body}</p>
+              <div className="mt-6 flex flex-wrap items-center gap-2 border-t border-line pt-5">
+                <span className="mr-1 text-[10px] text-mute/65">参数</span>
+                {tool.params.map((param) => <span key={param} className="rounded-md border border-line bg-white/[0.025] px-2 py-1 font-mono text-[10px] text-mute">{param}</span>)}
+              </div>
+              <p className="mt-4 overflow-x-auto rounded-lg border border-line bg-black/25 px-3 py-3 font-mono text-[10px] whitespace-nowrap text-mute/70">{tool.output}</p>
+            </SpotlightCard>
+          ))}
+        </div>
+      </GuideSection>
 
-      <section className="border-b border-line">
-        <div className="mx-auto max-w-[1440px] px-5 pb-24 pt-16 md:px-8">
-          <SectionHeading
-            no="01"
-            label="两个工具"
-            title="词典的目录页与内页"
-            description="先查目录锁定 slug，再取整页提示词——两步就是一次完整的检索。词典条目变动后数据自动同步，不需要任何维护。"
-          />
-          <div className="grid gap-5 md:grid-cols-2">
-            {tools.map((t) => {
-              const Icon = t.icon;
-              return (
-                <SpotlightCard key={t.name} className="p-7">
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="grid size-10 place-items-center rounded-xl border border-white/10 bg-white/5">
-                      <Icon className="size-4.5 text-accent" />
-                    </span>
-                    <div className="flex flex-wrap justify-end gap-1.5">
-                      {t.params.map((p) => (
-                        <span
-                          key={p}
-                          className="rounded-full border border-line px-2.5 py-1 font-mono text-[10px] text-mute"
-                        >
-                          {p}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <h3 className="mt-6 text-lg font-semibold tracking-tight">{t.title}</h3>
-                  <p className="mt-1 font-mono text-xs text-accent">{t.name}</p>
-                  <p className="mt-3 text-sm leading-relaxed text-mute">{t.body}</p>
-                  <p className="mt-5 truncate rounded-lg border border-line bg-black/40 px-3 py-2 font-mono text-[11px] text-mute">
-                    {t.output}
-                  </p>
-                </SpotlightCard>
-              );
-            })}
+      <GuideSection id="conversation" no="02" label="对话示例" title="从一句话，到一个好界面。"
+        description="描述你的想法，AI 会自己翻阅词典，把合适的组件带回项目。">
+        <div className="grid items-center gap-8 lg:grid-cols-[0.7fr_1.3fr] lg:gap-16">
+          <div className="max-w-sm">
+            <p className="eyebrow text-accent/70">灵感无需中转</p>
+            <h3 className="mt-4 text-2xl font-medium leading-relaxed tracking-tight">留在熟悉的编辑器里，<br />让创作保持连贯。</h3>
+            <p className="mt-5 text-sm leading-7 text-mute">从挑选效果，到读取设计要点和完整源码，AI 会完成中间的检索。你可以继续调整颜色、文案与布局，让组件成为作品的一部分。</p>
+            <p className="mt-7 border-l border-accent/30 pl-4 text-xs leading-6 text-mute">支持 Claude Code、Cursor、Windsurf 等 MCP 客户端。右侧为组件检索与接入的对话演示。</p>
           </div>
+          <div className="min-w-0"><ChatDemo /></div>
         </div>
-      </section>
+      </GuideSection>
 
-      <section className="border-b border-line">
-        <div className="mx-auto max-w-[1440px] px-5 pb-24 pt-16 md:px-8">
-          <SectionHeading
-            no="02"
-            label="真实对话"
-            title="AI 自己翻词典的样子"
-            description="你提需求，AI 检索词典、锁定组件、取回源码，再把组件装进你的项目——中间不需要你复制任何东西。"
-          />
-          <ChatDemo />
-        </div>
-      </section>
+      <GuideSection id="connect" no="03" label="接入方式" title="选一种方式，开始连接。"
+        description="本地使用选 stdio，团队共享选 HTTP。先在仓库目录安装依赖，再将服务添加到你的 AI 客户端。">
+        <CodeTabs tabs={tabs} className="mx-auto max-w-5xl" />
+      </GuideSection>
 
-      <section className="border-b border-line">
-        <div className="mx-auto max-w-[1440px] px-5 pb-24 pt-16 md:px-8">
-          <SectionHeading
-            no="03"
-            label="接入方式"
-            title="三行命令，连上词典"
-            description="stdio 适合本地单人，HTTP 适合团队共享；Cursor、Windsurf 等 MCP 客户端同理配置。"
-          />
-          <CodeTabs tabs={tabs} />
-        </div>
-      </section>
-
-      <section>
-        <div className="border-b border-line py-6">
-          <Marquee duration={28} gap="3.5rem">
-            {highlights.map((h) => (
-              <span key={h} className="flex items-center gap-14">
-                <span className="font-mono text-xs uppercase tracking-[0.3em] text-mute">{h}</span>
-                <span aria-hidden className="size-1.5 rotate-45 bg-accent" />
-              </span>
-            ))}
-          </Marquee>
-        </div>
-        <div className="mx-auto max-w-[1440px] px-5 py-28 text-center md:px-8">
-          <h2 className="text-3xl font-semibold tracking-tight md:text-5xl">
-            下一句话，就让 AI 开工。
-          </h2>
-          <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-mute">
-            复制接入命令，回到你的 Agent 里说一句「帮我找个流光按钮」——词典自会递上答案。
-          </p>
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <CopyButton text={ADD_CMD} label="复制接入命令" variant="primary" />
-            <a
-              href={site.github}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex h-9 items-center gap-1 rounded-full border border-line px-4 text-xs text-mute transition-colors hover:border-white/20 hover:text-ink"
-            >
-              GitHub
-              <ArrowUpRight className="size-3.5" />
-            </a>
-          </div>
-        </div>
-      </section>
+      <GuideOutro highlights={highlights} title="下一句话，就让 AI 开工。"
+        description="复制接入命令，在仓库目录完成配置，再试着说一句「帮我找个流光按钮」。"
+        command={ADD_CMD} copyLabel="复制接入命令" href={site.github} linkLabel="查看项目源码" external />
     </>
   );
 }

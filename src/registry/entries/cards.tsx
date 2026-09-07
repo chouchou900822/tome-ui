@@ -206,32 +206,34 @@ export function Feature() {
     title: "果冻卡片",
     name: "Wobble Card",
     category: "cards",
-    description: "卡体小幅度倾斜晃动、内部色晕反向漂移，松手弹簧拉回，像按在软胶上。",
+    description: "指尖揉动时柔软形变，按住挤扁、松手弹颤，像一块有厚度的半透明果冻。",
     designNotes: [
-      "父层 perspective 800px；指针归一化坐标映射到 ±3.5° 的 rotateX/rotateY",
-      "弹簧参数 stiffness 160、damping 13、mass 0.6，低阻尼带来果冻般的回弹晃动",
-      "卡内两团色晕（48px 天蓝 25%、56px 紫色 20%，均 blur-3xl）按指针反向位移 12–16px，与卡体形成拉扯感",
-      "离开后所有值弹回 0；prefers-reduced-motion 时完全静止",
+      "悬停挤压量 0.06、按压 0.18，横向缩放为 1 + 挤压量 + 方向差 × 0.035，纵向取倒数保持面积；中心按压稳定在约 1.18 × 0.85",
+      "移动弹簧 stiffness 180、damping 10、mass 0.8；挤压弹簧 240、9、0.8，松开或离开后衰减振荡回到原形",
+      "父层 perspective 800px；位移目标 ±10/6px、倾斜 ±5°、平面旋转 ±2°、剪切 ±4°；32px 圆角随方向与挤压变化，最小 14px，外层固定测量避免坐标抖动",
+      "底色 #111225、白色 20% 边框；224px 天蓝 30% 与 256px 紫色 35% 色晕均模糊 40px、反向位移 18–24px；叠加白色 18% 内高光与跟随指针的 18% 光泽",
+      "支持主指针按压与 Enter / 空格操作，指针取消或失焦即回弹；prefers-reduced-motion 时保持零形变，触屏保留原生滚动",
     ],
     deps: ["motion"],
     file: "cards/wobble-card.tsx",
-    tags: ["弹簧", "色晕", "果冻", "悬停"],
+    tags: ["弹簧", "挤压", "果冻", "悬停", "回弹"],
     usage: `import { WobbleCard } from "@/components/ui/wobble-card";
 
 export function Showcase() {
   return (
-    <WobbleCard className="max-w-md">
+    <WobbleCard className="w-80 max-w-full">
       <h3 className="text-2xl font-semibold">软软的容器</h3>
-      <p className="mt-2 text-sm text-zinc-400">移动鼠标试试果冻手感。</p>
+      <p className="mt-2 text-sm text-zinc-300">移动揉一揉，按住再松手。</p>
     </WobbleCard>
   );
 }`,
     preview: (
-      <WobbleCard className="w-full max-w-xs @md:max-w-md">
+      <WobbleCard className="w-64 p-6 @md:w-96 @md:p-8">
+        <Waves aria-hidden className="mb-5 size-6 text-sky-200 @md:mb-8 @md:size-8" />
         <h4 className="text-xl font-semibold tracking-tight text-white @md:text-2xl">
           软软的容器
         </h4>
-        <p className="mt-2 text-sm text-zinc-400">移动鼠标试试果冻手感。</p>
+        <p className="mt-2 text-xs text-zinc-300 @md:text-sm">移动揉一揉，按住再松手。</p>
       </WobbleCard>
     ),
   },

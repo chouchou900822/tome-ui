@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronRight, Package } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -67,89 +67,86 @@ export default async function ComponentPage({ params }: Params) {
   const next = registry[index + 1];
 
   return (
-    <article className="mx-auto max-w-[1440px] px-5 pb-28 pt-10 md:px-8">
-      <div className="flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.25em] text-mute">
-        <Link href="/#gallery" className="inline-flex items-center gap-2 transition-colors hover:text-ink">
-          <ArrowLeft className="size-3.5" />
-          返回词典
+    <article className="page-shell pb-20 pt-7 md:pb-28 md:pt-9">
+      <nav aria-label="面包屑导航" className="flex min-w-0 items-center gap-2.5 text-[11px] text-mute">
+        <Link href="/#gallery" className="inline-flex shrink-0 items-center gap-2 transition-colors hover:text-ink">
+          <ArrowLeft aria-hidden className="size-3.5" />组件词典
         </Link>
-        <span>
-          <span className="font-pixel text-accent">No.{formatIndex(index)}</span>
-          <span className="mx-3">/</span>
-          <Link href={`/?category=${category.id}#gallery`} className="hover:text-ink">
-            {category.code}
-          </Link>
-        </span>
-      </div>
+        <ChevronRight aria-hidden className="size-3 shrink-0 text-mute/40" />
+        <Link href={"/?category=" + category.id + "#gallery"} className="shrink-0 transition-colors hover:text-ink">{category.label}</Link>
+        <ChevronRight aria-hidden className="size-3 shrink-0 text-mute/40" />
+        <span className="truncate text-ink/65">{entry.title}</span>
+      </nav>
 
-      <header className="mt-10 grid gap-8 lg:grid-cols-12 lg:items-end">
-        <div className="lg:col-span-8">
-          <h1 className="text-5xl font-semibold tracking-tight md:text-7xl">
-            {entry.title}
-            <span className="ml-4 align-middle font-mono text-base font-normal tracking-normal text-mute md:text-lg">
-              {entry.name}
-            </span>
-          </h1>
-          <p className="mt-6 max-w-2xl text-base leading-relaxed text-mute md:text-lg">{entry.description}</p>
+      <header className="mb-9 mt-10 grid gap-7 lg:grid-cols-[1fr_auto] lg:items-end md:mb-11 md:mt-12">
+        <div className="min-w-0">
+          <p className="eyebrow flex items-center gap-3">
+            <span className="text-accent">No.{formatIndex(index)}</span><span aria-hidden className="h-px w-5 bg-white/20" />{entry.name}
+          </p>
+          <h1 className="mt-4 text-4xl font-medium leading-tight tracking-[-0.045em] sm:text-5xl lg:text-6xl">{entry.title}</h1>
+          <p className="mt-5 max-w-2xl text-sm leading-7 text-mute">{entry.description}</p>
         </div>
-        <div className="flex flex-wrap items-center gap-3 lg:col-span-4 lg:justify-end">
+        <div className="flex flex-wrap items-center gap-3 lg:flex-col lg:items-end">
           <CopyButton text={prompt} variant="primary" className="h-11 px-6 text-sm" />
-          <span className="font-mono text-[11px] text-mute">
-            {entry.deps.length ? `依赖 ${entry.deps.join(" · ")}` : "无额外依赖"}
-          </span>
+          <span className="text-[10px] text-mute">复制给 AI，把效果带进你的项目</span>
         </div>
       </header>
 
-      <div className="mt-10">
-        <PreviewStage contentClassName={entry.previewClassName}>{entry.preview}</PreviewStage>
-      </div>
+      <PreviewStage contentClassName={entry.previewClassName}>{entry.preview}</PreviewStage>
 
-      <div className="mt-12 grid gap-10 lg:grid-cols-12">
-        <aside className="lg:col-span-4">
-          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-mute">设计要点</p>
-          <ol className="mt-5 space-y-4">
-            {entry.designNotes.map((note, i) => (
-              <li key={note} className="flex gap-4 text-sm leading-relaxed">
-                <span className="font-pixel text-accent">0{i + 1}</span>
-                <span className="text-ink/85">{note}</span>
-              </li>
-            ))}
-          </ol>
-          <p className="mt-10 font-mono text-[11px] uppercase tracking-[0.3em] text-mute">标签</p>
-          <ul className="mt-4 flex flex-wrap gap-2">
-            {entry.tags.map((tag) => (
-              <li key={tag} className="rounded-full border border-line px-3 py-1 text-xs text-mute">
-                {tag}
-              </li>
-            ))}
-          </ul>
+      <div className="mt-10 grid gap-7 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.8fr)] lg:gap-9">
+        <aside className="order-2 min-w-0 lg:order-1">
+          <div className="surface-panel p-5 sm:p-6 lg:sticky lg:top-24">
+            <p className="eyebrow">设计手记</p>
+            <h2 className="mt-2 text-lg font-medium tracking-tight">好效果，藏在这些细节里。</h2>
+            <ol className="mt-6 space-y-5">
+              {entry.designNotes.map((note, noteIndex) => (
+                <li key={note} className="flex gap-3.5 text-xs leading-6">
+                  <span className="mt-0.5 font-mono text-[10px] text-accent/70">{String(noteIndex + 1).padStart(2, "0")}</span>
+                  <span className="text-mute">{note}</span>
+                </li>
+              ))}
+            </ol>
+            <div className="mt-6 border-t border-line pt-5">
+              <p className="flex items-center gap-2 text-[10px] text-mute"><Package aria-hidden className="size-3" />{entry.deps.length ? "依赖 " + entry.deps.join(" · ") : "无需额外依赖"}</p>
+              <ul aria-label="组件标签" className="mt-4 flex flex-wrap gap-2">
+                {entry.tags.map((tag) => (
+                  <li key={tag} className="rounded-md border border-line bg-white/[0.02] px-2 py-1 text-[10px] text-mute">{tag}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </aside>
-        <div className="lg:col-span-8">
-          <CodeTabs tabs={tabs} />
-        </div>
+        <div className="order-1 min-w-0 lg:order-2"><CodeTabs tabs={tabs} /></div>
       </div>
 
-      <nav className="mt-20 grid gap-4 border-t border-line pt-8 md:grid-cols-2">
-        {prev ? (
-          <Link href={`/c/${prev.slug}`} className="group flex items-center gap-4 rounded-2xl border border-line p-5 transition-colors hover:border-white/20">
-            <ArrowLeft className="size-4 text-mute transition-transform group-hover:-translate-x-1" />
-            <span>
-              <span className="block font-mono text-[10px] uppercase tracking-[0.25em] text-mute">上一个</span>
-              <span className="mt-1 block font-medium">{prev.title}</span>
-            </span>
-          </Link>
-        ) : (
-          <span />
-        )}
-        {next ? (
-          <Link href={`/c/${next.slug}`} className="group flex items-center justify-end gap-4 rounded-2xl border border-line p-5 text-right transition-colors hover:border-white/20">
-            <span>
-              <span className="block font-mono text-[10px] uppercase tracking-[0.25em] text-mute">下一个</span>
-              <span className="mt-1 block font-medium">{next.title}</span>
-            </span>
-            <ArrowRight className="size-4 text-mute transition-transform group-hover:translate-x-1" />
-          </Link>
-        ) : null}
+      <nav aria-label="组件翻页" className="mt-14 border-t border-line pt-7 md:mt-20">
+        <div className="mb-5 flex items-center justify-between">
+          <p className="eyebrow">继续翻阅</p>
+          <span className="font-mono text-[10px] text-mute">{formatIndex(index)} / {registry.length}</span>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          {prev ? (
+            <Link href={"/c/" + prev.slug} className="surface-panel group flex items-center gap-5 p-5 transition-colors hover:border-accent/25 sm:p-6">
+              <span className="grid size-9 place-items-center rounded-full border border-line text-mute transition-colors group-hover:border-accent/25 group-hover:text-accent"><ArrowLeft aria-hidden className="size-4 motion-safe:transition-transform motion-safe:group-hover:-translate-x-0.5" /></span>
+              <span className="min-w-0">
+                <span className="block text-[10px] text-mute">上一个组件</span>
+                <span className="mt-2 block text-sm font-medium">{prev.title}</span>
+                <span className="mt-1 block truncate font-mono text-[10px] text-mute/60">{prev.name}</span>
+              </span>
+            </Link>
+          ) : <span className="hidden md:block" />}
+          {next ? (
+            <Link href={"/c/" + next.slug} className="surface-panel group flex items-center justify-end gap-5 p-5 text-right transition-colors hover:border-accent/25 sm:p-6">
+              <span className="min-w-0">
+                <span className="block text-[10px] text-mute">下一个组件</span>
+                <span className="mt-2 block text-sm font-medium">{next.title}</span>
+                <span className="mt-1 block truncate font-mono text-[10px] text-mute/60">{next.name}</span>
+              </span>
+              <span className="grid size-9 place-items-center rounded-full border border-line text-mute transition-colors group-hover:border-accent/25 group-hover:text-accent"><ArrowRight aria-hidden className="size-4 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5" /></span>
+            </Link>
+          ) : null}
+        </div>
       </nav>
     </article>
   );
