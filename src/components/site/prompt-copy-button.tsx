@@ -26,7 +26,7 @@ export function PromptCopyButton({
   const [state, setState] = useState<CopyState>("idle");
 
   useEffect(() => {
-    if (state === "idle") return;
+    if (state === "idle" || state === "loading") return;
     const timer = window.setTimeout(() => setState("idle"), state === "error" ? 3000 : 2000);
     return () => window.clearTimeout(timer);
   }, [state]);
@@ -39,8 +39,7 @@ export function PromptCopyButton({
       const text = await res.text();
       await navigator.clipboard.writeText(text);
       setState("done");
-    } catch (error) {
-      console.error("复制失败", error);
+    } catch {
       setState("error");
     }
   };
@@ -51,8 +50,8 @@ export function PromptCopyButton({
       ? "border-accent bg-accent text-accent-ink"
       : state === "error"
         ? "border-red-500/40 bg-red-500/10 text-red-400"
-        : "border-line bg-white/5 text-ink hover:border-white/20 hover:bg-white/10";
-  const text = state === "done" ? doneLabel : state === "error" ? "复制失败" : label;
+        : "border-line bg-white/[0.025] text-mute hover:border-white/20 hover:bg-white/[0.065] hover:text-ink";
+  const text = state === "done" ? doneLabel : state === "error" ? "复制失败，请重试" : state === "loading" ? "正在复制…" : label;
 
   return (
     <button
@@ -61,14 +60,16 @@ export function PromptCopyButton({
       disabled={state === "loading"}
       aria-label={text}
       aria-live="polite"
+      title={text}
       className={cn(
-        "inline-flex items-center gap-2 rounded-full border text-xs font-medium transition-all duration-300",
+        "inline-flex shrink-0 items-center gap-2 rounded-full border text-xs font-medium transition-colors duration-200 disabled:cursor-wait",
         tone,
         iconOnly ? "size-8 justify-center" : "px-3.5 py-2",
         className,
+        state !== "idle" && tone,
       )}
     >
-      <Icon className={cn("size-3.5", state === "loading" && "motion-safe:animate-spin")} />
+      <Icon aria-hidden className={cn("size-3.5", state === "loading" && "motion-safe:animate-spin")} />
       {iconOnly ? null : <span>{text}</span>}
     </button>
   );

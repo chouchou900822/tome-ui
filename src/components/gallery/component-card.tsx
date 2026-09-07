@@ -20,45 +20,38 @@ interface ComponentCardProps {
   item: GalleryItem;
 }
 
-/** 词典卡片：预览进入视口才挂载（LazyMount），复制按钮点击时才拉取提示词 */
+/** 预览保持独立交互，标题与角标负责进入详情。 */
 export function ComponentCard({ item }: ComponentCardProps) {
   const { summary, index, preview, previewClassName } = item;
   const category = getCategory(summary.category);
 
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-panel transition-colors hover:border-white/20">
-      {/* 舞台不包链接：预览内的交互（拖动、点击）不触发跳转，进详情走标题或右上角箭头 */}
-      <LazyMount placeholder={<div className="aspect-[4/3] bg-white/[0.02] motion-safe:animate-pulse" />}>
-        <PreviewFrame className="aspect-[4/3]" contentClassName={previewClassName}>
-          {preview}
-        </PreviewFrame>
-      </LazyMount>
-
-      <div className="flex items-start justify-between gap-4 px-5 pb-5 pt-4">
-        <div className="min-w-0">
-          <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-mute">
-            <span>{formatIndex(index)}</span>
-            <span className="size-0.5 rounded-full bg-mute" />
-            <span>{category.code}</span>
+    <article className="group/card relative flex min-w-0 flex-col overflow-hidden rounded-2xl border border-line bg-panel shadow-[0_4px_24px_-16px_#000] transition-[border-color,box-shadow] duration-300 hover:border-white/20 hover:shadow-[0_12px_40px_-20px_#000]">
+      <div className="relative border-b border-line">
+        <LazyMount placeholder={<div className="aspect-[4/3] bg-white/[0.015] motion-safe:animate-pulse" />}>
+          <PreviewFrame className="aspect-[4/3]" contentClassName={previewClassName}>{preview}</PreviewFrame>
+        </LazyMount>
+        <span className="pointer-events-none absolute left-3.5 top-3.5 rounded-md border border-white/5 bg-black/30 px-2 py-1 font-mono text-[9px] tracking-wider text-white/40 backdrop-blur-sm">No.{formatIndex(index)}</span>
+        <Link href={"/c/" + summary.slug} aria-label={"查看" + summary.title + "详情"}
+          className="absolute right-3 top-3 grid size-8 place-items-center rounded-full border border-white/10 bg-canvas/60 text-white/60 backdrop-blur-sm transition-colors hover:border-accent/40 hover:text-accent">
+          <ArrowUpRight aria-hidden className="size-3.5" />
+        </Link>
+      </div>
+      <div className="flex flex-1 flex-col p-4 xl:p-5">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <span className="font-mono text-[9px] tracking-[0.14em] text-mute/65">{category.code}</span>
+          <span aria-hidden className="h-px w-5 bg-white/10 transition-colors group-hover/card:bg-accent/50" />
+        </div>
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h4 className="text-sm font-medium tracking-tight">
+              <Link href={"/c/" + summary.slug} className="transition-colors hover:text-accent">{summary.title}</Link>
+            </h4>
+            <p className="mt-1 truncate font-mono text-[10px] text-mute/70">{summary.name}</p>
           </div>
-          <h3 className="mt-2 flex items-baseline gap-2">
-            <Link href={`/c/${summary.slug}`} className="text-base font-semibold tracking-tight text-ink">
-              {summary.title}
-            </Link>
-            <span className="truncate text-xs text-mute">{summary.name}</span>
-          </h3>
-          <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-mute">{summary.description}</p>
+          <PromptCopyButton slug={summary.slug} iconOnly className="size-8 border-transparent bg-transparent text-mute hover:border-line" />
         </div>
-        <div className="flex shrink-0 flex-col items-end gap-2">
-          <PromptCopyButton slug={summary.slug} iconOnly />
-          <Link
-            href={`/c/${summary.slug}`}
-            aria-label="查看详情"
-            className="grid size-8 place-items-center rounded-full border border-line text-mute transition-colors hover:border-white/20 hover:text-ink"
-          >
-            <ArrowUpRight className="size-3.5" />
-          </Link>
-        </div>
+        <p className="mt-3 line-clamp-2 min-h-10 text-xs leading-5 text-mute">{summary.description}</p>
       </div>
     </article>
   );

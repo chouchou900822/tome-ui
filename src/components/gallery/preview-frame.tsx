@@ -17,7 +17,7 @@ export function PreviewFrame({ children, className, contentClassName }: PreviewF
     <div
       className={cn(
         "relative isolate overflow-hidden bg-[#0b0b0d] @container",
-        "bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.045)_1px,transparent_1.5px)] bg-[size:20px_20px]",
+        "bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.035)_1px,transparent_1.5px)] bg-[size:20px_20px]",
         className,
       )}
     >

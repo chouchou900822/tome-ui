@@ -1,103 +1,52 @@
-import { ArrowUpRight } from "lucide-react";
+import { ArrowDown, Globe, Network } from "lucide-react";
+import { GuideHero, type GuideStat } from "@/components/docs/guide-hero";
 import { CopyButton } from "@/components/site/copy-button";
 import { TerminalWindow } from "@/components/site/terminal-window";
-import { site } from "@/lib/site";
 import { AuroraBackground } from "@/registry/components/backgrounds/aurora-background";
-import { NumberTicker } from "@/registry/components/effects/number-ticker";
-import { ShinyText } from "@/registry/components/text/shiny-text";
-import { TextReveal } from "@/registry/components/text/text-reveal";
 
-const stats = [
-  { value: 2, label: "内置服务", suffix: "" },
-  { value: 1, label: "启动命令", suffix: "" },
+const stats: GuideStat[] = [
+  { value: 2, label: "内置服务" },
+  { value: 1, label: "启动命令" },
   { value: 100, label: "静态导出", suffix: "%" },
 ];
 
 interface DockerHeroProps {
-  /** 启动命令终端窗口（shiki 已高亮） */
   terminal: { title: string; code: string; html: string };
 }
 
-/** Docker 页首屏：极光背景 + 启动命令终端 + 数字滚动统计 */
 export function DockerHero({ terminal }: DockerHeroProps) {
   return (
-    <section className="border-b border-line">
-      <AuroraBackground className="min-h-[calc(100svh-3.5rem)]">
-        <div className="mx-auto grid min-h-[calc(100svh-3.5rem)] max-w-[1440px] items-center gap-14 px-5 pb-20 pt-16 md:px-8 lg:grid-cols-12 lg:gap-12">
-          <div className="relative lg:col-span-6">
-            {/* 左栏局部暗化底衬：压住极光亮区，保证文字对比度 */}
-            <div
-              aria-hidden
-              className="pointer-events-none absolute -inset-x-10 -inset-y-12 rounded-[3rem] bg-black/50 blur-3xl"
-            />
-            <div className="relative">
-              <p className="flex flex-wrap items-center gap-3 font-mono text-[11px] uppercase tracking-[0.3em] text-mute">
-                <span className="font-pixel text-accent">DEPLOY</span>
-                <span className="h-px w-8 bg-white/15" />
-                <span>DOCKER</span>
-              </p>
-
-              <h1 className="mt-10 text-[clamp(2.4rem,5.2vw,4.6rem)] font-semibold leading-[1.05] tracking-tight">
-                <TextReveal text="一条命令，" />
-                <br />
-                <span className="text-outline">
-                  <TextReveal text="跑起整本词典。" delay={0.35} />
-                </span>
-              </h1>
-
-              <p className="mt-8 max-w-lg text-base leading-relaxed text-mute">
-                容器里同时住着两个服务：
-                <ShinyText
-                  text="静态站点给人看，MCP 服务器给 AI 用。"
-                  baseColor="rgba(255,255,255,0.8)"
-                  className="text-white/85"
-                />
-                拉下镜像、映射两个端口，组件词典就在你的机器上开张。
-              </p>
-
-              <div className="mt-10 flex flex-wrap items-center gap-4">
-                <CopyButton text={terminal.code} label="复制启动命令" variant="primary" />
-                <a
-                  href={`${site.github}/blob/main/Dockerfile`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex h-9 items-center gap-1 rounded-full border border-white/15 px-4 text-xs text-mute transition-colors hover:border-white/30 hover:text-ink"
-                >
-                  查看 Dockerfile
-                  <ArrowUpRight className="size-3.5" />
-                </a>
-              </div>
-
-              <div className="mt-12 grid max-w-sm grid-cols-3 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10">
-                {stats.map((s) => (
-                  <div key={s.label} className="bg-black/60 p-4 backdrop-blur-sm">
-                    <NumberTicker
-                      value={s.value}
-                      suffix={s.suffix}
-                      className="font-pixel text-2xl text-white"
-                    />
-                    <p className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-mute">
-                      {s.label}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="lg:col-span-6">
-            <TerminalWindow {...terminal} beam={false} className="backdrop-blur-sm" />
-            <div className="mt-4 flex flex-wrap justify-end gap-2">
-              <span className="rounded-full border border-white/15 bg-black/50 px-3 py-1.5 font-mono text-[10px] tracking-wide text-white/60 backdrop-blur-sm">
-                页面 http://localhost:3000/
-              </span>
-              <span className="rounded-full border border-white/15 bg-black/50 px-3 py-1.5 font-mono text-[10px] tracking-wide text-white/60 backdrop-blur-sm">
-                MCP http://localhost:8787/mcp
-              </span>
-            </div>
-          </div>
+    <GuideHero label="把词典，留在自己的空间" code="DOCKER" title={["一条命令，", "拥有整本词典。"]}
+      description={<p>把组件站点与 MCP 服务一起打包，部署到你的机器或团队服务器。打开浏览器挑选灵感，让 AI 随时取用。</p>}
+      actions={<><CopyButton text={terminal.code} label="复制启动命令" variant="primary" /><a href="#install" className="button-secondary text-xs">查看部署步骤<ArrowDown aria-hidden className="size-3.5" /></a></>}
+      stats={stats} links={[{ id: "install", label: "获取镜像" }, { id: "services", label: "容器服务" }, { id: "operations", label: "日常维护" }]}>
+      <div className="relative mx-auto max-w-[560px]">
+        <div aria-hidden className="pointer-events-none absolute -inset-10 overflow-hidden rounded-full opacity-40 blur-3xl">
+          <AuroraBackground colors={["#233b19", "#122b28", "#343e18"]} speed={22} className="h-full" />
         </div>
-      </AuroraBackground>
-    </section>
+        <div className="relative">
+          <div className="mb-4 flex items-center justify-between px-1">
+            <span className="eyebrow text-[9px]">从这一条命令开始</span>
+            <span className="font-mono text-[9px] text-mute/55">tome-ui / latest</span>
+          </div>
+          <TerminalWindow {...terminal} beam={false} className="bg-[#101314]/95" />
+          <div className="mt-3 grid grid-cols-2 gap-3">
+            <div className="surface-panel bg-[#101314]/90 p-4 sm:p-5">
+              <Globe aria-hidden className="size-4 text-accent/75" />
+              <p className="mt-4 text-xs font-medium">组件站点</p>
+              <p className="mt-2 font-mono text-[10px] text-mute">localhost:3000</p>
+              <p className="mt-3 text-[10px] leading-5 text-mute/65">为每一位创作者准备</p>
+            </div>
+            <div className="surface-panel bg-[#101314]/90 p-4 sm:p-5">
+              <Network aria-hidden className="size-4 text-accent/75" />
+              <p className="mt-4 text-xs font-medium">MCP 服务器</p>
+              <p className="mt-2 font-mono text-[10px] text-mute">localhost:8787/mcp</p>
+              <p className="mt-3 text-[10px] leading-5 text-mute/65">让 AI 与词典保持连接</p>
+            </div>
+          </div>
+          <p className="mt-4 text-right text-[10px] text-mute/60">容器启动后，即可通过以上地址访问</p>
+        </div>
+      </div>
+    </GuideHero>
   );
 }

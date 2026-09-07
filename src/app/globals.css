@@ -8,10 +8,10 @@
 
 @theme {
   --color-canvas: #09090b;
-  --color-panel: #0f0f11;
-  --color-ink: #f4f4f5;
-  --color-mute: #8b8b93;
-  --color-line: rgba(255, 255, 255, 0.08);
+  --color-panel: #111213;
+  --color-ink: #efefe9;
+  --color-mute: #969792;
+  --color-line: rgba(255, 255, 255, 0.09);
   --color-accent: #d7ff3c;
   --color-accent-ink: #0a0a0a;
 
@@ -41,6 +41,15 @@
     text-rendering: optimizeLegibility;
   }
 
+  button:not(:disabled), [role="button"] {
+    cursor: pointer;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 4px;
+  }
+
   ::selection {
     @apply bg-accent text-accent-ink;
   }
@@ -52,7 +61,7 @@
     inset: 0;
     z-index: 50;
     pointer-events: none;
-    opacity: 0.035;
+    opacity: 0.022;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
@@ -60,12 +69,46 @@
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@utility page-shell {
+  @apply mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-12;
+}
+
+@utility section-space {
+  @apply py-16 md:py-24;
+}
+
+@utility eyebrow {
+  @apply font-mono text-[10px] font-medium uppercase tracking-[0.2em] text-mute;
+}
+
+@utility surface-panel {
+  @apply rounded-2xl border border-line bg-panel shadow-[inset_0_1px_0_0_#ffffff05,0_12px_40px_-24px_#00000080];
+}
+
+@utility button-primary {
+  @apply inline-flex h-11 items-center justify-center gap-2 rounded-full border border-accent bg-accent px-5 text-sm font-medium text-accent-ink transition-colors hover:bg-[#e3ff7c] disabled:pointer-events-none disabled:opacity-50;
+}
+
+@utility button-secondary {
+  @apply inline-flex h-11 items-center justify-center gap-2 rounded-full border border-white/12 bg-white/[0.025] px-5 text-sm text-ink transition-colors hover:border-white/25 hover:bg-white/[0.065] disabled:pointer-events-none disabled:opacity-50;
+}
+
+@utility icon-button {
+  @apply inline-flex size-9 shrink-0 items-center justify-center rounded-full border border-line bg-white/[0.025] text-mute transition-colors hover:border-white/25 hover:bg-white/[0.065] hover:text-ink;
 }
 
 /* shiki 输出：去掉自带背景，交给容器控制 */
 @utility code-surface {
   & pre.shiki {
-    @apply m-0 overflow-x-auto bg-transparent! p-5 text-[13px] leading-relaxed;
+    @apply m-0 overflow-x-auto bg-transparent! p-5 text-xs leading-[1.9] sm:p-6 sm:text-[13px];
   }
   & pre.shiki code {
     @apply font-mono;

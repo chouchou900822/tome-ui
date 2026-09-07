@@ -3,6 +3,7 @@ import type { GalleryItem } from "@/components/gallery/component-card";
 import { Gallery } from "@/components/gallery/gallery";
 import { Hero } from "@/components/home/hero";
 import { HowItWorks } from "@/components/home/how-it-works";
+import { SectionHeading } from "@/components/site/section-heading";
 import { registry, toSummary } from "@/registry";
 
 export default function HomePage() {
@@ -17,19 +18,10 @@ export default function HomePage() {
     <>
       <Hero />
       <HowItWorks />
-      <section id="gallery" className="mx-auto max-w-[1440px] scroll-mt-14 px-5 pb-28 pt-16 md:px-8">
-        <div className="mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-mute">
-              <span className="font-pixel text-accent">01</span> — 词典
-            </p>
-            <h2 className="mt-4 text-4xl font-semibold tracking-tight md:text-6xl">全部组件</h2>
-          </div>
-          <p className="max-w-md text-sm leading-relaxed text-mute">
-            按分类分节浏览，或用关键词直达。每张卡片都是真实运行的组件，复制按钮会把这一条的完整提示词放进剪贴板。
-          </p>
-        </div>
-        <Suspense fallback={null}>
+      <section id="gallery" className="page-shell scroll-mt-[88px] pb-24 pt-16 md:pb-32 md:pt-20">
+        <SectionHeading no="01" label="组件词典 / THE COLLECTION" title="值得收藏的每一处细节。"
+          description="每一个预览，都是真实运行的组件。找到喜欢的效果，把设计、源码与灵感一起带走。" />
+        <Suspense fallback={<p className="py-16 text-center text-sm text-mute">正在打开组件词典…</p>}>
           <Gallery items={items} />
         </Suspense>
       </section>

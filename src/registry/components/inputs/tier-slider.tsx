@@ -51,7 +51,7 @@ function palette(t: number): Hsl {
 }
 
 /** 填充画法：渐变从更朴素的起点流向当前位置，高位叠加同色光晕 */
-function fillPaint(t: number, widthPx: number) {
+function fillPaint(t: number, widthPx: number): CSSProperties {
   const c = palette(t);
   const from = palette(Math.max(t - 0.35, 0));
   return {
@@ -112,14 +112,7 @@ const KEYFRAMES = `
  * 档位滑杆：渐变填充随拖动流动，松手吸附到最近档位；最高档进入满档呼吸发光。
  * 位置更新走 rAF 直接写样式，避免每帧 setState。
  */
-export function TierSlider({
-  label,
-  levels,
-  defaultIndex = 0,
-  onChange,
-  icon,
-  className,
-}: TierSliderProps) {
+export function TierSlider({ label, levels, defaultIndex = 0, onChange, icon, className }: TierSliderProps) {
   const tiers = Math.max(levels.length, 2);
   const snap = 100 / (tiers - 1);
   const startIndex = Math.min(Math.max(defaultIndex, 0), tiers - 1);
@@ -224,13 +217,8 @@ export function TierSlider({
         <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-xl bg-white/[0.06] text-zinc-400">
           {icon ?? (
             <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={1.8}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="size-5"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}
+              strokeLinecap="round" strokeLinejoin="round" className="size-5"
             >
               <path d="M13 2 4.5 13.5H11L9.5 22 18.5 10.5H12L13 2z" />
             </svg>

@@ -49,6 +49,7 @@ export function OrbitingCircles({
               "--radius": radius,
               "--angle": (360 / Math.max(count, 1)) * i + startAngle,
               "--orbit-duration": duration,
+              transform: "rotate(calc(var(--angle) * 1deg)) translateY(calc(var(--radius) * 1px)) rotate(calc(var(--angle) * -1deg))",
               animationDirection: reverse ? "reverse" : "normal",
             } as CSSProperties
           }

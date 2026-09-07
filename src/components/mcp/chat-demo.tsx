@@ -15,12 +15,12 @@ function UserMsg({ text }: { text: string }) {
 function ToolCall({ name, args, result }: { name: string; args: string; result: string }) {
   return (
     <div className="rounded-xl border border-line bg-black/40 px-4 py-3 font-mono text-xs leading-relaxed">
-      <p className="flex items-center gap-2 text-white/80">
+      <p className="flex flex-wrap items-center gap-x-2 gap-y-1 break-all text-white/80">
         <Wrench className="size-3.5 shrink-0 text-accent" />
         <span className="text-ink">{name}</span>
         <span className="text-mute">{args}</span>
       </p>
-      <p className="mt-1.5 pl-5.5 text-mute">→ {result}</p>
+      <p className="mt-1.5 pl-5.5 text-[11px] leading-6 text-mute">→ {result}</p>
     </div>
   );
 }
@@ -44,21 +44,21 @@ const followUps = [
 /** 对话演示：一次真实的 Agent 查词典过程，底部输入栏持续打字 */
 export function ChatDemo() {
   return (
-    <GlassSurface className="mx-auto max-w-3xl">
+    <GlassSurface className="mx-auto max-w-3xl border-white/10 bg-[#111315] shadow-[0_20px_70px_-30px_#000]">
       <div className="flex items-center justify-between gap-3 border-b border-white/10 px-5 py-3.5">
         <div className="flex min-w-0 items-center gap-3">
           <span aria-hidden className="flex shrink-0 items-center gap-1.5">
-            <span className="size-2.5 rounded-full bg-[#ff5f57]" />
-            <span className="size-2.5 rounded-full bg-[#febc2e]" />
-            <span className="size-2.5 rounded-full bg-[#28c840]" />
+            <span className="size-2 rounded-full bg-white/20" />
+            <span className="size-2 rounded-full bg-white/12" />
+            <span className="size-2 rounded-full bg-white/8" />
           </span>
           <span className="truncate font-mono text-[11px] text-mute">
-            agent-session — tome-mcp 已连接
+            tome-mcp / 对话示例
           </span>
         </div>
         <span className="flex shrink-0 items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-accent">
-          <span aria-hidden className="size-1.5 rounded-full bg-accent motion-safe:animate-pulse" />
-          live
+          <span aria-hidden className="size-1.5 rounded-full bg-accent/60" />
+          演示
         </span>
       </div>
 

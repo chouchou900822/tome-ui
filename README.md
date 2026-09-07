@@ -25,12 +25,16 @@ Tome（意为「典籍」）是一个开源的「组件词典」。每个组件�
 
 ## 快速开始
 
+使用 Node.js 22.6+，推荐与 Docker 镜像一致的 Node.js 24；包管理使用 pnpm。
+
 ```bash
 pnpm install
 pnpm dev        # http://localhost:3000
 pnpm build      # 生产构建（全静态）
 pnpm typecheck  # TypeScript 严格检查
 ```
+
+构建会自动规范化 Windows 的静态路由预取文件名，保证页面跳转在普通静态托管中正常工作。
 
 ## Docker
 
@@ -91,9 +95,10 @@ Next.js 16（App Router）· React 19 · Tailwind CSS v4 · motion · shiki · l
 │   │   ├── gallery/            # 筛选栏、组件卡片、预览舞台
 │   │   └── detail/             # 详情页预览与代码选项卡
 │   ├── lib/                    # prompt 生成、源码读取、高亮、搜索
+│   ├── build/                  # 静态导出后的路由资源整理
 │   └── registry/               # 词典本体
 │       ├── components/<分类>/  # 组件源码（会原样写入提示词）
-│       ├── entries/<分类>.tsx  # 元数据、设计要点、用法、演示节点
+│       ├── entries/            # 分类注册条目；特效拆入 effects/ 子目录
 │       ├── categories.ts
 │       ├── types.ts
 │       └── index.ts
@@ -111,7 +116,7 @@ Next.js 16（App Router）· React 19 · Tailwind CSS v4 · motion · shiki · l
 
 ## 部署
 
-项目无运行时服务依赖。`pnpm build` 后可用 `pnpm start` 运行，或部署到 Vercel / Netlify / Cloudflare 等平台。部署前把 `src/lib/site.ts` 中的 `github` 改成你的仓库地址。
+站点使用全静态导出。执行 `pnpm build` 后，将 `out/` 交给静态服务器或 Vercel / Netlify / Cloudflare 等平台托管；`pnpm start` 不适用于此导出模式。Docker 镜像已包含静态服务配置。部署前可在 `src/lib/site.ts` 中调整仓库地址。
 
 ## 许可证
 

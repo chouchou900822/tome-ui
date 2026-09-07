@@ -1,43 +1,37 @@
-import { Bot, ClipboardCopy, MousePointer2 } from "lucide-react";
+import { ArrowUpRight, Bot, ClipboardCopy, MousePointer2, type LucideIcon } from "lucide-react";
 
-const steps = [
-  {
-    icon: MousePointer2,
-    title: "挑选组件",
-    body: "在词典里实时预览每一个效果，悬停、点击、滚动，亲手确认它是不是你想要的。",
-  },
-  {
-    icon: ClipboardCopy,
-    title: "复制提示词",
-    body: "一键复制。提示词里同时包含设计要点、完整源码与用法示例，AI 不用猜。",
-  },
-  {
-    icon: Bot,
-    title: "交给 AI",
-    body: "粘贴到 Cursor、Claude Code、Windsurf 或 v0，AI 会把组件装进你的项目并接好数据。",
-  },
+interface Step {
+  icon: LucideIcon;
+  title: string;
+  body: string;
+}
+
+const steps: Step[] = [
+  { icon: MousePointer2, title: "遇见心动的组件", body: "悬停、点击、滚动，亲手感受每一个细节。" },
+  { icon: ClipboardCopy, title: "复制完整提示词", body: "设计要点、源码与用法，一次复制就齐了。" },
+  { icon: Bot, title: "交给你的 AI", body: "粘贴给 Cursor、Claude Code 或 v0，即刻实现。" },
 ];
 
 export function HowItWorks() {
   return (
-    <section className="border-b border-line">
-      <div className="mx-auto max-w-[1440px] px-5 md:px-8">
-        <ol className="grid divide-y divide-line md:grid-cols-3 md:divide-x md:divide-y-0">
-          {steps.map((step, i) => {
-            const Icon = step.icon;
-            return (
-              <li key={step.title} className="relative py-10 md:px-10 md:py-14 md:first:pl-0 md:last:pr-0">
-                <div className="flex items-center justify-between">
-                  <span className="font-pixel text-4xl text-accent md:text-5xl">0{i + 1}</span>
-                  <Icon className="size-5 text-mute" />
-                </div>
-                <h3 className="mt-8 text-xl font-semibold tracking-tight">{step.title}</h3>
-                <p className="mt-3 max-w-sm text-sm leading-relaxed text-mute">{step.body}</p>
-              </li>
-            );
-          })}
-        </ol>
-      </div>
+    <section id="how-it-works" aria-label="如何使用组件词典" className="scroll-mt-24 border-b border-line bg-white/[0.012]">
+      <ol className="page-shell grid divide-y divide-line md:grid-cols-3 md:divide-x md:divide-y-0">
+        {steps.map((step, index) => (
+          <li key={step.title} className="flex gap-4 py-7 md:px-6 md:py-8 md:first:pl-0 md:last:pr-0 lg:px-9">
+            <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-xl border border-line bg-white/[0.025]">
+              <step.icon aria-hidden className="size-4 text-mute" />
+            </span>
+            <div className="min-w-0">
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-[10px] text-accent/80">0{index + 1}</span>
+                <h2 className="text-sm font-medium">{step.title}</h2>
+                <ArrowUpRight aria-hidden className="ml-auto hidden size-3 text-mute/50 xl:block" />
+              </div>
+              <p className="mt-2 text-xs leading-6 text-mute">{step.body}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
     </section>
   );
 }

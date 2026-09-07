@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { SearchX } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ComponentCard, type GalleryItem } from "@/components/gallery/component-card";
 import { GalleryNav, type NavItem } from "@/components/gallery/gallery-nav";
@@ -93,18 +94,17 @@ export function Gallery({ items }: GalleryProps) {
   };
 
   // 软导航（目录点击、Hero 索引条、详情页返回）后滚到画廊顶部；首次挂载交给深链锚点
-  const firstRender = useRef(true);
+  const previousSelection = useRef(selected);
   useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false;
-      return;
-    }
-    document.getElementById("gallery")?.scrollIntoView({ behavior: "smooth" });
+    if (previousSelection.current === selected) return;
+    previousSelection.current = selected;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    document.getElementById("gallery")?.scrollIntoView({ behavior: reducedMotion ? "instant" : "smooth" });
   }, [selected]);
 
   return (
     // lg 以下保持普通流：sticky 吸顶条若是单列 grid item，grid area 只有自身高度，sticky 会失效
-    <div className="lg:grid lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-10">
+    <div className="lg:grid lg:grid-cols-[12rem_minmax(0,1fr)] lg:gap-9 xl:gap-12">
       <GalleryNav
         items={navItems}
         activeId={activeId}
@@ -114,16 +114,22 @@ export function Gallery({ items }: GalleryProps) {
         onNavigate={navigate}
       />
 
-      <div>
+      <div className="min-w-0">
+        {results ? <p role="status" className="mb-5 hidden text-xs text-mute lg:block">找到 <span className="font-mono text-accent">{results.length}</span> 个匹配的组件</p> : null}
         {results ? (
           results.length > 0 ? (
-            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {results.map((item) => (
                 <ComponentCard key={item.summary.slug} item={item} />
               ))}
             </div>
           ) : (
-            <p className="py-24 text-center text-sm text-mute">没有匹配的组件，换个关键词试试。</p>
+            <div className="surface-panel flex min-h-72 flex-col items-center justify-center px-6 py-16 text-center">
+              <SearchX aria-hidden className="size-7 text-mute/60" />
+              <h3 className="mt-5 text-base font-medium">还没找到这份灵感</h3>
+              <p className="mt-2 text-xs leading-6 text-mute">试试组件名称、动效描述，或「按钮」「发光」这样的关键词。</p>
+              <button type="button" onClick={() => setQuery("")} className="button-secondary mt-6 h-9 text-xs">清空搜索，继续探索</button>
+            </div>
           )
         ) : selectedSection ? (
           <GallerySection

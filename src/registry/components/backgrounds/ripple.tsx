@@ -22,9 +22,9 @@ export function Ripple({ children, className, rings = 5, speed = 4.5 }: RipplePr
           {Array.from({ length: rings }, (_, i) => (
             <span
               key={i}
-              className="ripple-ring absolute inset-0 rounded-full border border-white/25"
+              className="ripple-ring absolute inset-0 rounded-full border border-white/25 opacity-0"
               style={{
-                animationDelay: `${((i * speed) / rings).toFixed(2)}s`,
+                animationDelay: `${((-i * speed) / rings).toFixed(2)}s`,
                 animationDuration: `${speed}s`,
               }}
             />

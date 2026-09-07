@@ -35,6 +35,8 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ### 2. 注册条目：`src/registry/entries/<分类>.tsx`
 
+特效分类按目录收纳：`effects/index.tsx` 与 `effects/additional.tsx`，以保持注册目录每层不超过 8 个文件。
+
 在数组**末尾**追加一个 `RegistryEntry`（数组顺序 = 词典编号 No.XX 与详情页前后导航的顺序；首页画廊目录/分节与 Hero 分类索引按各分类条目数降序展示，与数组顺序无关）：
 
 - `slug`：kebab-case，全站唯一，决定 `/c/<slug>` 与 `/api/prompt/<slug>`
@@ -54,6 +56,8 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 入场动画（挂载即播、只播一次）的组件需提供 `loop` 属性：播完停顿约 2s 后自动重播，且 `preview` 中开启 `loop`——卡片随画廊渲染、用户滚到时动画早已播完，循环才能被看到；真实使用默认关闭（参考 `SplitText`、`BlurText`、`DecryptText`）。进视口触发（`whileInView`）的组件用 `once: false` 即可，悬停触发的组件初始静态可见，都不需要 loop。
 
 ### 3. 验证
+
+`pnpm build` 在静态导出后会规范化 Windows 的路由分段文件名，确保浏览器预取与页面跳转能在普通静态托管中正常使用。构建环境使用 Node.js 22.6+，推荐与 Docker 镜像一致的 Node.js 24。
 
 ```bash
 pnpm typecheck
