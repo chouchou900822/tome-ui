@@ -14,13 +14,13 @@ export const backgroundEntries: RegistryEntry[] = [
     title: "极光背景",
     name: "Aurora Background",
     category: "backgrounds",
-    description: "三层大尺寸模糊色块以不同节奏漂移，叠加噪点，像夜空中缓慢流动的极光。",
+    description: "低饱和的紫、青与灰绿光带在夜色中缓慢交错，细噪点与暗部让光拥有层次。",
     designNotes: [
-      "三个占容器 55% 宽高的圆形色块，颜色默认紫、青、荧光绿，分别放在左上、右上、中下",
-      "整组色块做 blur-3xl 模糊、饱和度 150%、透明度 70%，混合后形成柔和的过渡",
-      "每个色块用同一段关键帧（位移 + 缩放）往返播放，时长 14s/17s/20s 并用负延迟错开相位",
-      "顶层叠一层 SVG feTurbulence 噪点，透明度 12%、mix-blend-mode: overlay，消除渐变色带",
-      "容器 isolate + overflow-hidden，子内容 relative 置于最上层；纯 CSS 动画",
+      "底色 #080c12；三道椭圆光带默认 #7564c9、#4da6a8、#b4d4c0，每道宽 120%、高 75%，径向渐变在 49–52% 形成亮脊、66% 处透明",
+      "光带组向两侧扩展 20%、上下扩展 30%，整体倾斜 -12°、模糊 28px、透明度 65%，保留深色间隙避免混成实心色块",
+      "位移范围 x -4%→5%、y -3%→6%，独立 rotate -8°→3°、scale 0.98→1.06；默认 18/23/28s 往返，负延迟 0/-6/-12s 错峰",
+      "底部叠加第二色 22% 的径向光晕；噪点透明度 5.5%、soft-light 混合；边缘渐隐到 #080c12 的 60% 暗部",
+      "纯 CSS 动画、装饰层 aria-hidden，prefers-reduced-motion 时保留静态弧形光带，正文置于最上层",
     ],
     deps: [],
     file: "backgrounds/aurora-background.tsx",
@@ -37,9 +37,10 @@ export function Hero() {
     previewClassName: "p-0",
     preview: (
       <AuroraBackground className={fill}>
-        <p className="text-xl font-semibold tracking-tight text-white @md:text-3xl @xl:text-5xl">
-          在极光下发布
-        </p>
+        <div className="px-6 text-center">
+          <p className="mb-4 font-mono text-[8px] tracking-[0.35em] text-white/50 @md:text-[10px]">AFTER HOURS</p>
+          <p className="text-2xl font-medium tracking-tight text-white @md:text-4xl @xl:text-5xl">夜色，缓缓流动。</p>
+        </div>
       </AuroraBackground>
     ),
   },
@@ -54,7 +55,7 @@ export function Hero() {
       "两层完全相同排布的点阵：底层暗点（白 14%），顶层亮点（品牌色）",
       "顶层加一个跟随鼠标、半径 220px 的径向遮罩（中心不透明、70% 处透明），只显露指针附近的亮点",
       "鼠标坐标用 MotionValue 写入 mask-image，离开容器时把坐标移到画面外",
-      "容器 isolate + overflow-hidden，子内容 relative 置于点阵上方",
+      "容器 isolate + overflow-hidden，内容置于点阵上方；prefers-reduced-motion 时停止鼠标跟随，保留中心点亮、65% 处淡出的静态点阵",
     ],
     deps: ["motion"],
     file: "backgrounds/dot-grid.tsx",
@@ -119,7 +120,7 @@ export function Hero() {
     description: "细长光条头亮尾散，从右上向左下错峰坠落，安静夜空里的一阵流星。",
     designNotes: [
       "每条流星是 120px×1px 的圆角细条，白色 70% 向右渐隐；头部 3px 白点带 6px 半径的白 35% 光晕",
-      "位移沿 215deg 方向推进 480px，前 15% 淡入、70% 前保持全亮、随后淡出，时长 3.5–6.5s 各不相同",
+      "光条旋转 -35°，沿自身负 X 轴推进 480px，从右上飞向左下；前 15% 淡入、70% 前保持全亮、随后淡出，时长 3.5–6.5s 各不相同",
       "animation-fill-mode: backwards 且基础态 opacity-0：错峰延迟期与 prefers-reduced-motion 下均不可见，避免横条裸露",
       "数量默认 14 条，top/left/延迟/时长由索引经确定性伪随机派生，服务端与客户端渲染一致",
       "纯 CSS 关键帧，无限循环，尊重 prefers-reduced-motion；容器 isolate + overflow-hidden",
@@ -185,10 +186,11 @@ export function Section() {
     category: "backgrounds",
     description: "顶边中点向下张开数道光束，双层模糊反向缓摆，像放映机的灯锥。",
     designNotes: [
-      "两层 220% 宽的正方形光层以顶边中点为 conic-gradient 原点，向下 0–120° 扇区内分布 3 束白光与 1 束淡青光，束宽 6–8°",
-      "主层 blur(12px)、透明度 80%，10s 摆完一轮；副层 blur(40px)、透明度 50%、束位错开，16s 反向摆动，均 alternate 往返",
-      "摆动是围绕顶边中点 ±2.5° 的 rotate；线性遮罩让光在 85%/90% 高度处渐隐",
-      "纯 CSS 实现，尊重 prefers-reduced-motion；容器 isolate + overflow-hidden",
+      "两层光幕宽 200%、高 140%、顶部偏移 -5%；锥形渐变从 135° / 140° 开始，光束落在朝下的扇区，避免光线偏出画面",
+      "主层 4 道冷白光束，峰值透明度 16–25%、模糊 3px、整层透明度 80%；副层模糊 18px、透明度 60%，形成空气中的柔光",
+      "以顶边中点为原点做 ±2° 独立 rotate，14s / 21s 反向往返；线性遮罩在光层高度 88% / 90% 处完全淡出",
+      "顶部径向光晕颜色 rgba(200,224,242,0.16)；中央 30% 宽的 1px 光源边缘叠加 20px 模糊、3px 扩展、12% 透明度冷白辉光",
+      "纯 CSS 实现；prefers-reduced-motion 时静止并保留清晰光幕，所有装饰层 aria-hidden",
     ],
     deps: [],
     file: "backgrounds/light-rays.tsx",
@@ -205,9 +207,10 @@ export function Hero() {
     previewClassName: "p-0",
     preview: (
       <LightRays className={fill}>
-        <p className="text-xl font-semibold tracking-tight text-white @md:text-3xl @xl:text-5xl">
-          聚光灯下
-        </p>
+        <div className="px-6 text-center">
+          <p className="mb-4 font-mono text-[8px] tracking-[0.35em] text-slate-400 @md:text-[10px]">IN THE QUIET</p>
+          <p className="text-2xl font-light tracking-wide text-white @md:text-4xl @xl:text-5xl">让光，留在此刻。</p>
+        </div>
       </LightRays>
     ),
   },

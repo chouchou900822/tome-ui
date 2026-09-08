@@ -73,8 +73,7 @@ export function LogoWall() {
       "使用 useInView 监听，元素有一半进入视口后只播放一次",
       "用 motion 的 animate(0, value) 驱动，时长 1.8s，缓动 cubic-bezier(0.16,1,0.3,1) 先快后慢",
       "通过 Intl.NumberFormat 格式化，支持千分位、小数位、前后缀",
-      "使用 tabular-nums 等宽数字，滚动时宽度不抖动",
-      "等宽数字加千分位后整串不可换行，并排多项数据时用 flex-wrap 并给足间距，防止长数字（如 12,800+）溢出与相邻项重合",
+      "使用 tabular-nums 统一每位数字宽度；并排数据用 flex-wrap、横向 40px / 纵向 16px 间距，避免 12,800+ 等长数字与相邻项重合",
       "服务端渲染最终值利于 SEO，客户端挂载后再重置为 0 开始播放；尊重 prefers-reduced-motion",
     ],
     deps: ["motion"],
@@ -164,13 +163,14 @@ export function Card() {
     description: "仿 macOS Dock：图标随指针距离平滑放大，相邻图标被推开，附悬停标签。",
     designNotes: [
       "容器记录指针 clientX 到一个 MotionValue，离开时置为 Infinity 让所有图标回到基础尺寸",
-      "每个图标计算自身中心与指针的水平距离，在 ±140px 范围内把尺寸从 44px 插值到 44×1.7px",
+      "宽舞台基础图标 44px、峰值放大 1.7 倍、影响范围 ±140px；ResizeObserver 按可用宽度减去 26px 容器边距、8px 图标间距与放大余量计算尺寸，小舞台同步收缩影响范围",
       "尺寸经过弹簧（mass 0.1、stiffness 170、damping 14）平滑，放大与回弹带惯性",
-      "容器 items-end 让图标向上生长；毛玻璃底（白 5% + backdrop-blur-xl）、1px 白色 10% 边框、rounded-2xl",
-      "悬停时图标上方浮现标签（role=tooltip），图标按钮带 aria-label",
+      "容器底边对齐、圆角 20px、边框白 15%，底色由白 10% 渐变到 3.5%；图标由 #303237 渐变到 #1b1c20，圆角为尺寸的 28%，叠加 1px 白 8% 顶部高光",
+      "悬停与键盘聚焦均显示顶部标签，按钮 aria-label 保留名称；prefers-reduced-motion 时保留自适应尺寸，停用放大与弹簧",
     ],
     deps: ["motion"],
     file: "effects/dock.tsx",
+    previewClassName: "px-4",
     tags: ["导航", "macOS", "弹簧", "图标"],
     usage: `import { Compass, Folder, Mail, Music, Settings } from "lucide-react";
 import { Dock } from "@/components/ui/dock";
@@ -208,7 +208,7 @@ export function AppDock() {
     category: "effects",
     description: "图标沿圆周匀速公转且始终保持正立，叠多层半径与速度可组成星轨。",
     designNotes: [
-      "轨道项均分圆周：初始角度 = 360° / 项数 × 序号 + 起始角，容器尺寸 = 半径 × 2 + 96px 的正方形",
+      "轨道项均分圆周：初始角度 = 360° / 项数 × 序号 + 起始角，容器尺寸 = 半径 × 2 + 96px；直径为半径 2 倍的 1px 白 8% 圆环标出轨迹",
       "关键帧为 rotate(角) translateY(半径) rotate(-角)：先转到轨道点、推出半径、再反向转回，保证项自身始终正立",
       "默认 24s 一圈线性匀速，支持反向（animation-direction: reverse）与任意起始角",
       "轨道项用 Tailwind 位移类（独立 translate 属性）居中，与关键帧 transform 不叠加冲突",

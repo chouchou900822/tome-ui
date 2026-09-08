@@ -13,6 +13,8 @@ interface DecryptTextProps {
   frameDelay?: number;
   /** 鼠标悬停时重新播放 */
   replayOnHover?: boolean;
+  /** 关闭后只在悬停或键盘聚焦时播放 */
+  animateOnMount?: boolean;
   /** 播完后自动重播（用于演示场景） */
   loop?: boolean;
   /** 乱码字符集 */
@@ -20,6 +22,10 @@ interface DecryptTextProps {
 }
 
 const DEFAULT_GLYPHS = "!<>-_\\/[]{}=+*^?#ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+function splitGlyphs(value: string): string[] {
+  return Array.from(new Intl.Segmenter("zh-CN", { granularity: "grapheme" }).segment(value), (part) => part.segment);
+}
 
 /**
  * 解码文字：字符先以乱码闪动，再从左到右逐个落定为真实内容。
@@ -31,6 +37,7 @@ export function DecryptText({
   revealPerFrame = 0.5,
   frameDelay = 30,
   replayOnHover = true,
+  animateOnMount = true,
   loop = false,
   glyphs = DEFAULT_GLYPHS,
 }: DecryptTextProps) {
@@ -38,24 +45,26 @@ export function DecryptText({
   const frame = useRef<number | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const reduce = useReducedMotion();
+  const chars = splitGlyphs(text);
+  const displayed = splitGlyphs(display);
 
   const play = useCallback(() => {
-    if (reduce) return;
     if (frame.current !== null) cancelAnimationFrame(frame.current);
     if (timer.current !== null) clearTimeout(timer.current);
+    if (reduce) { setDisplay(text); return; }
 
-    const chars = Array.from(text);
+    const chars = splitGlyphs(text);
     let revealed = 0;
     let last = 0;
 
     const step = (now: number) => {
       if (now - last >= frameDelay) {
         last = now;
-        revealed += revealPerFrame;
+        revealed += Math.max(0.1, revealPerFrame);
         setDisplay(
           chars
             .map((c, i) => {
-              if (c === " " || i < revealed) return c;
+              if (/\s/.test(c) || i < revealed) return c;
               return glyphs[Math.floor(Math.random() * glyphs.length)] ?? c;
             })
             .join(""),
@@ -74,20 +83,30 @@ export function DecryptText({
   }, [text, frameDelay, revealPerFrame, glyphs, reduce, loop]);
 
   useEffect(() => {
-    play();
+    setDisplay(text);
+    if (animateOnMount || loop) play();
     return () => {
       if (frame.current !== null) cancelAnimationFrame(frame.current);
       if (timer.current !== null) clearTimeout(timer.current);
     };
-  }, [play]);
+  }, [play, text, animateOnMount, loop]);
 
   return (
     <span
       aria-label={text}
       onMouseEnter={replayOnHover ? play : undefined}
-      className={cn("inline-block font-mono tabular-nums", className)}
+      onFocus={replayOnHover ? play : undefined}
+      tabIndex={replayOnHover ? 0 : undefined}
+      className={cn("inline-block rounded-sm font-mono tabular-nums outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current", className)}
     >
-      <span aria-hidden>{display}</span>
+      <span aria-hidden>
+        {chars.map((char, i) => (
+          <span key={i} className="relative inline-grid">
+            <span className="invisible col-start-1 row-start-1 whitespace-pre">{char}</span>
+            <span className="col-start-1 row-start-1 text-center whitespace-pre">{displayed[i] ?? char}</span>
+          </span>
+        ))}
+      </span>
     </span>
   );
 }

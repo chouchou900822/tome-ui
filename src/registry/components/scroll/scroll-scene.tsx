@@ -33,7 +33,7 @@ export function ScrollScene({ items, className }: ScrollSceneProps) {
   return (
     <div
       className={cn(
-        "relative isolate h-full min-h-64 w-full overflow-hidden bg-[#0b0b0d] text-white",
+        "relative isolate h-full min-h-0 w-full overflow-hidden bg-[#0b0b0d] text-white",
         className,
       )}
     >

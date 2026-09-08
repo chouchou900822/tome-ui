@@ -38,6 +38,7 @@ export function OrbitingCircles({
       className={cn("relative isolate grid size-fit place-items-center", className)}
       style={{ width: box, height: box }}
     >
+      <div aria-hidden className="pointer-events-none absolute rounded-full border border-white/8" style={{ width: radius * 2, height: radius * 2 }} />
       {center}
       {items.map((item, i) => (
         <div

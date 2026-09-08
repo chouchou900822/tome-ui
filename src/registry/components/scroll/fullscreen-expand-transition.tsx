@@ -54,7 +54,7 @@ export function FullscreenExpandTransition({
   return (
     <div
       className={cn(
-        "relative h-full min-h-64 w-full overflow-hidden bg-[#0b0b0d] text-white",
+        "relative h-full min-h-0 w-full overflow-hidden bg-[#0b0b0d] text-white",
         className,
       )}
     >

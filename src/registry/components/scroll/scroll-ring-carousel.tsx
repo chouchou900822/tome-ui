@@ -52,7 +52,7 @@ export function ScrollRingCarousel({
   return (
     <div
       className={cn(
-        "relative h-full min-h-64 w-full overflow-hidden bg-[#0b0b0d] text-white",
+        "relative h-full min-h-0 w-full overflow-hidden bg-[#0b0b0d] text-white [container-type:size]",
         className,
       )}
     >
@@ -62,9 +62,9 @@ export function ScrollRingCarousel({
         tabIndex={0}
         aria-label="滚动旋转 3D 环形轮播"
       >
-        <div className="sticky top-0 flex h-full flex-col items-center justify-center overflow-hidden">
+        <div className="sticky top-0 flex h-full flex-col items-center justify-center overflow-hidden pb-12 @md:pb-16">
           <div aria-hidden className="absolute inset-x-[15%] top-1/2 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
-          <div style={{ perspective: "760px" }} className="relative h-44 w-36 @md:h-52 @md:w-44">
+          <div style={{ perspective: "760px" }} className="relative h-[clamp(112px,48cqh,208px)] w-[clamp(96px,40cqh,176px)]">
             <div
               ref={ringRef}
               className="relative size-full"
@@ -82,7 +82,7 @@ export function ScrollRingCarousel({
                   <p className="text-[9px] uppercase tracking-[0.28em] text-white/55">{item.label}</p>
                   <div>
                     <p className="mb-2 text-3xl font-light text-white/25">0{index + 1}</p>
-                    <h3 className="text-sm font-medium @md:text-base">{item.title}</h3>
+                    <h3 className="text-xs font-medium @md:text-base">{item.title}</h3>
                   </div>
                 </article>
               ))}

@@ -18,7 +18,8 @@ export function GlassSurface({ children, className }: GlassSurfaceProps) {
   return (
     <div
       className={cn(
-        "relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-2xl",
+        "relative overflow-hidden rounded-2xl border border-white/15 bg-white/[0.045] backdrop-blur-2xl",
+        "shadow-[0_20px_60px_-30px_rgba(0,0,0,0.8)]",
         className,
       )}
     >
@@ -27,19 +28,19 @@ export function GlassSurface({ children, className }: GlassSurfaceProps) {
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(120% 90% at 20% 0%, rgba(255,255,255,0.08), transparent 50%), linear-gradient(to bottom, rgba(255,255,255,0.05), transparent 40%)",
+            "radial-gradient(120% 90% at 0% 0%, rgba(255,255,255,0.12), transparent 55%), linear-gradient(135deg, rgba(255,255,255,0.04), transparent 40%, rgba(255,255,255,0.025))",
         }}
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_0_rgba(255,255,255,0.12),inset_0_0_24px_rgba(255,255,255,0.03)]"
+        className="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_0_rgba(255,255,255,0.2),inset_0_-1px_0_rgba(255,255,255,0.04),inset_0_0_24px_rgba(255,255,255,0.03)]"
       />
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-[0.05] mix-blend-overlay"
         style={{ backgroundImage: NOISE }}
       />
-      <div className="relative">{children}</div>
+      <div className="relative h-full">{children}</div>
     </div>
   );
 }

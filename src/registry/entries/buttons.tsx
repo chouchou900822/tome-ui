@@ -1,7 +1,6 @@
 import { ArrowRight, Sparkles } from "lucide-react";
 import { MagneticButton } from "@/registry/components/buttons/magnetic-button";
 import { ShimmerButton } from "@/registry/components/buttons/shimmer-button";
-import { StarBorder } from "@/registry/components/buttons/star-border";
 import type { RegistryEntry } from "@/registry/types";
 
 export const buttonEntries: RegistryEntry[] = [
@@ -16,7 +15,7 @@ export const buttonEntries: RegistryEntry[] = [
       "按钮位移 = 指针到按钮中心的偏移 × 0.35，内部文字再乘 0.45 形成两层视差",
       "位移经过弹簧平滑：stiffness 180、damping 16、mass 0.2，回弹带轻微过冲",
       "按下时缩放到 0.96；白底黑字胶囊形，外发光阴影强调可点击性",
-      "用 MotionValue 直接驱动 transform，鼠标移动不触发 React 重渲染",
+      "MotionValue 直接驱动位移，不触发重渲染；禁用或 prefers-reduced-motion 时按钮与文字位移均为 0，停用按压缩放；键盘聚焦显示 2px 白 60% 焦点环、偏移 4px",
     ],
     deps: ["motion"],
     file: "buttons/magnetic-button.tsx",
@@ -46,11 +45,11 @@ export function Cta() {
     category: "buttons",
     description: "一道锥形光沿按钮边缘持续旋转，形成会呼吸的发光边框。",
     designNotes: [
-      "外层是 1px 内边距的胶囊容器，内部放一个放大到四周各 -100% 的锥形渐变，让旋转时不露边",
-      "锥形渐变只有两段各约 10% 与 6% 的扇区带颜色（一主一次，相隔半圈），其余透明，旋转一圈 3s 线性匀速",
-      "内层用略亮于页面的深灰底板（#161619）盖住中心，只露出 1px 光边；悬停时底部浮现一层同色径向光晕",
+      "外层是 1px 内边距、白 10% 静态底边的胶囊容器；150% 宽的正方形光层居中旋转，独立 translate 与 rotate 避免位移叠加",
+      "锥形渐变从 55% 处透明开始，在 75% 处为主色 20%、88% 处达到主色、90% 处消失，默认每 3s 匀速绕行一圈",
+      "内层底色 #161619、顶部 1px 白 8% 高光、底部 1px 黑 40% 内阴影；悬停或键盘聚焦时浮现主色 12% 的底部光晕，500ms 淡入",
       "整体悬停上浮 2px，按下归位，用 300ms ease-out 过渡",
-      "纯 CSS 动画实现，关键帧随组件内联，无需修改全局样式；尊重 prefers-reduced-motion",
+      "纯 CSS 动画；禁用时暂停旋转，prefers-reduced-motion 时停止旋转与上浮；字体从外层继承，支持容器查询调整字号",
     ],
     deps: [],
     file: "buttons/shimmer-button.tsx",
@@ -68,46 +67,14 @@ export function Cta() {
 }`,
     preview: (
       <div className="flex flex-wrap items-center justify-center gap-4">
-        <ShimmerButton className="@md:text-base">
+        <ShimmerButton shimmerColor="#c9dbc5" speed={4} className="@md:text-base">
           <Sparkles className="size-4" />
           生成组件
         </ShimmerButton>
-        <ShimmerButton shimmerColor="#7c3aed" speed={2} className="@md:text-base">
-          紫色变体
+        <ShimmerButton shimmerColor="#aaa7d8" speed={5} className="@md:text-base">
+          暮紫变体
         </ShimmerButton>
       </div>
-    ),
-  },
-  {
-    slug: "star-border",
-    title: "流星描边按钮",
-    name: "Star Border",
-    category: "buttons",
-    description: "两颗光点沿圆角边框相向环绕，深色实底把它们遮成一圈流动的描边。",
-    designNotes: [
-      "按钮外层是 1px 内边距、overflow-hidden 的胶囊容器；内层深底板（zinc-950）盖住中心，只露出 1px 边框区",
-      "两根从中心出发的 1px 旋臂绕中心旋转，臂端各挂一颗 8px 圆光点：一颗纯白、一颗天蓝",
-      "光点带 8px 半径、70% 透明度同色的阴影光晕；两臂同速 5s 一圈、方向相反，第二臂负延迟半个周期错开",
-      "纯 CSS 关键帧，尊重 prefers-reduced-motion（静止时两颗光点停在边框两侧）",
-    ],
-    deps: [],
-    file: "buttons/star-border.tsx",
-    tags: ["CTA", "描边", "光点", "纯 CSS"],
-    usage: `import { ArrowRight } from "lucide-react";
-import { StarBorder } from "@/components/ui/star-border";
-
-export function Cta() {
-  return (
-    <StarBorder>
-      立即体验
-      <ArrowRight className="size-4" />
-    </StarBorder>
-  );
-}`,
-    preview: (
-      <StarBorder className="@md:text-base @md:px-9 @md:py-4">
-        立即体验
-      </StarBorder>
     ),
   },
 ];

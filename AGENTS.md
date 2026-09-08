@@ -35,7 +35,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ### 2. 注册条目：`src/registry/entries/<分类>.tsx`
 
-特效分类按目录收纳：`effects/index.tsx` 与 `effects/additional.tsx`，以保持注册目录每层不超过 8 个文件。
+特效与卡片分类按目录收纳：`effects/index.tsx` 与 `effects/additional.tsx`、`cards/index.tsx` 与 `cards/surfaces.tsx`，以保持单文件不超过 300 行、注册目录每层不超过 8 个文件。
 
 在数组**末尾**追加一个 `RegistryEntry`（数组顺序 = 词典编号 No.XX 与详情页前后导航的顺序；首页画廊目录/分节与 Hero 分类索引按各分类条目数降序展示，与数组顺序无关）：
 

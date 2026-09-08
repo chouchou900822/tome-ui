@@ -35,22 +35,30 @@ export function TextPressure({
 
   useEffect(() => {
     const el = containerRef.current;
-    if (!el || reduce) return;
+    if (!el) return;
+    if (reduce) {
+      charsRef.current.forEach((span) => { if (span) { span.style.fontWeight = String(minWeight); span.style.fontVariationSettings = `"wght" ${minWeight}`; } });
+      return;
+    }
 
     const paint = () => {
       raf.current = 0;
-      for (const span of charsRef.current) {
-        if (!span) continue;
+      // 先集中读取固定字框，再写字重，避免每个字触发一次布局计算。
+      const weights = charsRef.current.map((span) => {
+        if (!span) return minWeight;
         const rect = span.getBoundingClientRect();
         const distance = Math.hypot(
           mouse.current.x - (rect.left + rect.width / 2),
           mouse.current.y - (rect.top + rect.height / 2),
         );
         const strength = Math.max(0, 1 - distance / radius);
-        const weight = Math.round(minWeight + (maxWeight - minWeight) * strength);
-        span.style.fontWeight = String(weight);
-        span.style.fontVariationSettings = `"wght" ${weight}`;
-      }
+        return Math.round(minWeight + (maxWeight - minWeight) * strength);
+      });
+      charsRef.current.forEach((span, index) => {
+        if (!span) return;
+        span.style.fontWeight = String(weights[index]);
+        span.style.fontVariationSettings = `"wght" ${weights[index]}`;
+      });
     };
 
     const schedule = () => {
@@ -72,6 +80,7 @@ export function TextPressure({
       el.removeEventListener("pointermove", onMove);
       el.removeEventListener("pointerleave", onLeave);
       cancelAnimationFrame(raf.current);
+      raf.current = 0;
     };
   }, [reduce, minWeight, maxWeight, radius]);
 
@@ -85,13 +94,14 @@ export function TextPressure({
         <span
           key={i}
           aria-hidden
-          ref={(el) => {
-            charsRef.current[i] = el;
-          }}
-          className="inline-block transition-[font-weight] duration-100"
-          style={{ fontWeight: minWeight }}
+          className="inline-grid"
         >
-          {c === " " ? " " : c}
+          <span className="invisible col-start-1 row-start-1 whitespace-pre" style={{ fontWeight: maxWeight }}>{c}</span>
+          <span
+            ref={(el) => { charsRef.current[i] = el; }}
+            className="col-start-1 row-start-1 whitespace-pre text-center transition-[font-weight] duration-100 motion-reduce:transition-none"
+            style={{ fontWeight: minWeight }}
+          >{c}</span>
         </span>
       ))}
     </span>

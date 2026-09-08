@@ -1,6 +1,5 @@
 import { BlurText } from "@/registry/components/text/blur-text";
 import { DecryptText } from "@/registry/components/text/decrypt-text";
-import { HyperText } from "@/registry/components/text/hyper-text";
 import { ShinyText } from "@/registry/components/text/shiny-text";
 import { SplitText } from "@/registry/components/text/split-text";
 import { TextReveal } from "@/registry/components/text/text-reveal";
@@ -85,11 +84,11 @@ export function Badge() {
     category: "text",
     description: "逐字输入、停顿、删除，循环展示一组短语，附带闪烁光标。",
     designNotes: [
-      "按码点切分字符，中文、emoji 不会被截断成半个字符",
+      "使用 Intl.Segmenter 按字素切分，中文与组合字符均保持完整；透明占位取全部短语的最大宽度，输入与删除不推动相邻文字",
       "输入间隔 70ms，删除间隔 35ms，一句打完停留 1.6s，删空后停 0.4s 再换下一句",
-      "光标是一个实心竖块字符，1s 周期硬切闪烁（前半亮后半灭）",
-      "容器使用 inline-flex 与 items-baseline，光标与文字基线对齐",
-      "使用 aria-live=polite 让屏幕阅读器在句子稳定后播报",
+      "光标为实心竖块，1.1s 周期硬切闪烁（前半亮后半灭），透明度 70%、左间距 2px，与文字基线对齐",
+      "屏幕阅读器仅在一句输入完成后通过 aria-live=polite 播报，不逐字打断阅读",
+      "首帧显示首句；prefers-reduced-motion 时固定首句并停止输入、删除和光标闪烁",
     ],
     deps: [],
     file: "text/typewriter.tsx",
@@ -129,8 +128,8 @@ export function Headline() {
       "使用 requestAnimationFrame 驱动，每 30ms 更新一帧，每帧揭示 0.5 个字符",
       "未揭示的位置从 !<>-_\\/[]{}=+*^?# 与大写字母、数字中随机取字，空格保持不变",
       "首帧与服务端渲染的都是最终文本，挂载后才开始乱码，避免水合不一致",
-      "鼠标悬停可重新播放；loop 开启时播完停 2.2s 自动重播，卸载时清理动画帧与定时器",
-      "使用等宽字体与 tabular-nums，乱码切换时宽度不抖动；尊重 prefers-reduced-motion",
+      "悬停或键盘聚焦可重播；animateOnMount=false 时只响应交互，loop 开启时播完停 2.2s 重播，卸载清理动画帧与定时器",
+      "按字素建立独立网格，用原字符透明占位稳定中西文字宽；聚焦显示 2px 焦点环、偏移 4px，prefers-reduced-motion 时直接显示完整原文",
     ],
     deps: ["motion"],
     file: "text/decrypt-text.tsx",
@@ -149,10 +148,10 @@ export function Terminal() {
         <DecryptText
           text="ACCESS GRANTED"
           loop
-          className="text-2xl font-semibold tracking-[0.2em] text-lime-300 @md:text-4xl @xl:text-6xl"
+          className="text-xl font-medium tracking-[0.12em] text-lime-300 @md:text-3xl @xl:text-5xl"
         />
         <DecryptText
-          text="悬停以重新解码"
+          text="悬停或聚焦，重新解码"
           frameDelay={45}
           className="text-xs tracking-widest text-zinc-500 @md:text-sm"
         />
@@ -166,9 +165,9 @@ export function Terminal() {
     category: "text",
     description: "关键词在同一位置上翻出翻入，旧词上移、新词补位，让标语动起来。",
     designNotes: [
-      "旧词位移 -80% 淡出、新词自 80% 淡入，0.45s、cubic-bezier(0.22,1,0.36,1)，AnimatePresence 串行衔接",
-      "默认每词停留 2.4s 后切换；容器 overflow-hidden 裁掉出入场的越界部分",
-      "aria-live=polite 让屏幕阅读器播报新词；prefers-reduced-motion 时直接硬切",
+      "旧词上移 65% 淡出、新词从下方 65% 淡入，伴随 4px→0px 对焦；0.45s、cubic-bezier(0.22,1,0.36,1)，同步交接避免空白停顿",
+      "默认每 2.4s 切换一次；用所有词的透明网格占位固定最大宽度，长短词交替不推动周围文字，overflow-hidden 裁掉越界部分",
+      "aria-live=polite 播报新词；prefers-reduced-motion 时停止轮换并清除位移与模糊",
     ],
     deps: ["motion"],
     file: "text/word-rotate.tsx",
@@ -189,7 +188,7 @@ export function Headline() {
         把
         <WordRotate
           className="mx-2 text-lime-300"
-          words={["灵感", "组件", "动效", "质感"]}
+          words={["灵感", "好设计", "细节", "创造力"]}
         />
         <br className="@md:hidden" />
         交给词典
@@ -233,9 +232,9 @@ export function Hero() {
     category: "text",
     description: "以词为单位从失焦的光斑中对焦成形，比逐字入场更柔和的副标题动效。",
     designNotes: [
-      "按空格切词，每词整团显影：blur 16px 到 0、scale 1.06 到 1、透明到不透明",
+      "使用 Intl.Segmenter 按中英文词语切分，标点附着前词、保留空格与自然换行；每词 blur 16px→0、scale 1.06→1、opacity 0→1",
       "单词 0.55s、词间隔默认 120ms，挂载即播放；比逐字版本更柔和，loop 开启时播完停 1.8s 自动重播",
-      "scale 走独立属性，避免与 transform 位移叠加；外层 aria-label 保留完整文本",
+      "每个词的最大宽度为容器 100%，超长词允许折行；外层 aria-label 保留完整文本，内部装饰字符 aria-hidden",
       "prefers-reduced-motion 时直接显示成品",
     ],
     deps: ["motion"],
@@ -254,40 +253,6 @@ export function SubHeadline() {
       <p className="max-w-[26ch] text-center text-lg leading-relaxed text-zinc-300 @md:text-2xl @xl:text-3xl">
         <BlurText text="复制一段提示词，得到一个有质感的组件。" loop />
       </p>
-    ),
-  },
-  {
-    slug: "hyper-text",
-    title: "字符跳变",
-    name: "Hyper Text",
-    category: "text",
-    description: "悬停时文字先整段抖成乱码，再从左到右逐位定格回原文。",
-    designNotes: [
-      "每 30ms 一帧，定格位置随时间从左推进，默认 900ms 走完全部字符",
-      "未定格字符每帧从符号、字母、数字中重抽；空格不参与跳变",
-      "初始与服务端渲染均为原文，挂载后悬停才开始乱码，水合安全",
-      "支持键盘聚焦触发；prefers-reduced-motion 时悬停不产生乱码",
-    ],
-    deps: ["motion"],
-    file: "text/hyper-text.tsx",
-    tags: ["悬停", "乱码", "交互"],
-    usage: `import { HyperText } from "@/components/ui/hyper-text";
-
-export function NavBrand() {
-  return (
-    <span className="text-xl font-semibold">
-      <HyperText text="TOME" />
-    </span>
-  );
-}`,
-    preview: (
-      <div className="flex flex-col items-center gap-3">
-        <HyperText
-          text="HOVER ME"
-          className="text-2xl font-semibold tracking-[0.25em] text-white @md:text-4xl @xl:text-6xl"
-        />
-        <p className="text-xs text-zinc-500 @md:text-sm">鼠标悬停，看文字抖动定格</p>
-      </div>
     ),
   },
 ];

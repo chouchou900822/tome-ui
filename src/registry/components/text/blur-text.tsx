@@ -46,7 +46,12 @@ export function BlurText({
 }: BlurTextProps) {
   const reduce = useReducedMotion();
   const [round, setRound] = useState(0);
-  const words = text.split(" ");
+  const words = Array.from(new Intl.Segmenter("zh-CN", { granularity: "word" }).segment(text))
+    .reduce<string[]>((parts, part) => {
+      if (!part.isWordLike && !/\s/.test(part.segment) && parts.length > 0) parts[parts.length - 1] += part.segment;
+      else parts.push(part.segment);
+      return parts;
+    }, []);
 
   useEffect(() => {
     if (!loop || reduce) return;
@@ -59,21 +64,20 @@ export function BlurText({
     <motion.span
       key={round}
       aria-label={text}
-      className={cn("inline-block", className)}
+      className={cn("inline-block max-w-full", className)}
       custom={{ stagger, delay }}
       variants={container}
       initial={reduce ? "visible" : "hidden"}
       animate="visible"
     >
-      {words.map((w, i) => (
+      {words.map((w, i) => /\s+/.test(w) && !w.trim() ? <span key={i} aria-hidden>{w}</span> : (
         <motion.span
           key={`${w}-${i}`}
           aria-hidden
           variants={word}
-          className="inline-block will-change-transform"
+          className="inline-block max-w-full [overflow-wrap:anywhere]"
         >
           {w}
-          {i < words.length - 1 ? " " : null}
         </motion.span>
       ))}
     </motion.span>

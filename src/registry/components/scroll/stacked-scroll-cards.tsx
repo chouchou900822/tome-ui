@@ -17,7 +17,7 @@ export function StackedScrollCards({ items, className }: StackedScrollCardsProps
   return (
     <div
       className={cn(
-        "h-full min-h-64 w-full overflow-y-auto overscroll-contain bg-[#0b0b0d] [container-type:size] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+        "h-full min-h-0 w-full overflow-y-auto overscroll-contain bg-[#0b0b0d] [container-type:size] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
         className,
       )}
       tabIndex={0}
@@ -27,7 +27,7 @@ export function StackedScrollCards({ items, className }: StackedScrollCardsProps
         {items.map((item, index) => (
           <article
             key={item.title}
-            className="sticky top-[var(--stack-top-small)] mb-20 flex h-[76cqh] min-h-52 flex-col justify-between overflow-hidden rounded-2xl border border-white/10 p-5 text-white shadow-[0_-18px_50px_rgba(0,0,0,0.35)] @md:top-[var(--stack-top-large)] @md:mb-28 @md:p-8"
+            className="sticky top-[var(--stack-top-small)] mb-20 flex h-[76cqh] min-h-40 flex-col justify-between overflow-hidden rounded-2xl border border-white/10 p-5 text-white shadow-[0_-18px_50px_rgba(0,0,0,0.35)] @md:top-[var(--stack-top-large)] @md:min-h-52 @md:mb-28 @md:p-8"
             style={
               {
                 backgroundColor: item.color,

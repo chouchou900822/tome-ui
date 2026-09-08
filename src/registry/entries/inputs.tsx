@@ -50,11 +50,11 @@ export function PowerControl() {
     category: "inputs",
     description: "拖到端点继续拖，整条轨道被拉弯、端点被拽出，松手后弹簧拉回原位。",
     designNotes: [
-      "轨道与填充是同一条二次贝塞尔曲线（strokeWidth 5、圆头）：M 起点 Q 中点 终点，中点 y 随过冲量上凸",
+      "SVG viewBox 为 320×88，轨道两端各留 40px；完整轨道与填充共用一条 5px 圆头二次贝塞尔曲线，pathLength=1 配合 strokeDasharray 按当前值显示填充",
       "过冲量由 motion 弹簧驱动（stiffness 240、damping 12、mass 0.7），松手时目标归零、轨道弹回直线，弹簧变化逐帧触发重绘",
-      "过冲上限 30% 轨道宽，中点上凸最深 33px；拖动中滑块从 6.5px 放大到 8px，外圈描边圆同步扩张",
-      "填充为天蓝 #38bdf8 到紫 #a855f7 的横向渐变；数值实时显示在滑块上方",
-      "pointer capture 处理拖拽、touch-none 禁用触摸设备的默认拖拽；role=slider 支持方向键 ±5 与 aria-valuenow",
+      "端点过冲上限 30% 轨道宽，贝塞尔控制点最多上抬 33px；拖动时滑块半径 6.5px→8px、外圈 11px→14px，数值位于滑块上方 20px",
+      "渐变从 #7dd3fc 到 #a5b4fc，gradientUnits=userSpaceOnUse 避免水平直线零高度导致渐变消失；只有拖动端延伸，另一端保持锚定",
+      "主指针 capture 处理拖动、取消与丢失捕获；四个方向键每次 ±5，Home/End 直达 0/100；prefers-reduced-motion 时保持直线与固定滑块尺寸，键盘焦点环为 2px 天蓝 60%",
     ],
     deps: ["motion"],
     file: "inputs/elastic-slider.tsx",
@@ -71,9 +71,10 @@ export function VolumeControl() {
 }`,
     tags: ["滑杆", "弹性", "SVG", "表单", "交互"],
     preview: (
-      <div className="flex flex-col items-center gap-4">
-        <ElasticSlider label="弹性张力" defaultValue={55} />
-        <p className="text-xs text-zinc-500">拖到最左或最右，再用力拖一下</p>
+      <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-[#111214] p-5 @md:p-7">
+        <div className="flex items-center justify-between"><span className="text-xs text-zinc-300">弹性张力</span><span className="font-mono text-[9px] tracking-[0.16em] text-zinc-500">TENSION</span></div>
+        <ElasticSlider label="弹性张力" defaultValue={55} className="mx-auto my-2" />
+        <p className="text-center text-[10px] text-zinc-500">在端点处继续拖动，松手回弹</p>
       </div>
     ),
   },

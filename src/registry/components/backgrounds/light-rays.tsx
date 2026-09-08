@@ -14,28 +14,28 @@ export function LightRays({ children, className }: LightRaysProps) {
   return (
     <div className={cn("relative isolate overflow-hidden bg-[#0b0b0d]", className)}>
       <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(200,224,242,0.16),transparent_65%)]" />
         <div
-          className="light-rays-sway absolute left-1/2 top-0 aspect-square w-[220%] -translate-x-1/2 opacity-80 blur-md"
+          className="light-rays-sway absolute -inset-x-1/2 -top-[5%] h-[140%] opacity-80 blur-[3px]"
           style={{
             transformOrigin: "50% 0",
-            animationDuration: "10s",
+            animationDuration: "14s",
             backgroundImage:
-              "conic-gradient(from 30deg at 50% 0%, transparent 0deg, rgba(255,255,255,0.1) 8deg, transparent 16deg, transparent 30deg, rgba(190,240,255,0.09) 38deg, transparent 46deg, transparent 62deg, rgba(255,255,255,0.07) 70deg, transparent 78deg, transparent 120deg)",
-            maskImage: "linear-gradient(to bottom, #000 0%, transparent 85%)",
-            WebkitMaskImage: "linear-gradient(to bottom, #000 0%, transparent 85%)",
+              "conic-gradient(from 135deg at 50% 0%, transparent 0deg, rgba(207,226,244,0.22) 8deg, transparent 15deg, transparent 24deg, rgba(240,246,255,0.18) 29deg, transparent 34deg, transparent 42deg, rgba(207,226,244,0.25) 47deg, transparent 53deg, transparent 64deg, rgba(240,246,255,0.16) 69deg, transparent 78deg, transparent 90deg)",
+            maskImage: "linear-gradient(to bottom, #000 5%, transparent 88%)",
           }}
         />
         <div
-          className="light-rays-sway light-rays-reverse absolute left-1/2 top-0 aspect-square w-[220%] -translate-x-1/2 opacity-50 blur-2xl"
+          className="light-rays-sway light-rays-reverse absolute -inset-x-1/2 -top-[5%] h-[140%] opacity-60 blur-[18px]"
           style={{
             transformOrigin: "50% 0",
-            animationDuration: "16s",
+            animationDuration: "21s",
             backgroundImage:
-              "conic-gradient(from 40deg at 50% 0%, transparent 0deg, rgba(120,200,255,0.07) 12deg, transparent 24deg, transparent 48deg, rgba(255,255,255,0.05) 58deg, transparent 68deg, transparent 120deg)",
+              "conic-gradient(from 140deg at 50% 0%, transparent 0deg, rgba(145,184,217,0.2) 18deg, transparent 30deg, transparent 44deg, rgba(224,238,255,0.15) 58deg, transparent 74deg, transparent 90deg)",
             maskImage: "linear-gradient(to bottom, #000 0%, transparent 90%)",
-            WebkitMaskImage: "linear-gradient(to bottom, #000 0%, transparent 90%)",
           }}
         />
+        <div className="absolute inset-x-[35%] top-0 h-px bg-linear-to-r from-transparent via-white/60 to-transparent shadow-[0_0_20px_3px_rgba(207,226,244,0.12)]" />
       </div>
       <div className="relative">{children}</div>
       <style href="light-rays-keyframes" precedence="medium">
@@ -44,8 +44,8 @@ export function LightRays({ children, className }: LightRaysProps) {
   .light-rays-reverse { animation-direction: alternate-reverse; }
 }
 @keyframes light-rays-sway {
-  from { transform: rotate(-2.5deg); }
-  to { transform: rotate(2.5deg); }
+  from { rotate: -2deg; }
+  to { rotate: 2deg; }
 }`}
       </style>
     </div>

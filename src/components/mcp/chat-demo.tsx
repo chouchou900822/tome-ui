@@ -67,7 +67,7 @@ export function ChatDemo() {
         <ToolCall
           name="list_components"
           args='{ "query": "按钮 流光" }'
-          result="3 条匹配：shimmer-button · star-border · magnetic-button"
+          result="2 条匹配：shimmer-button · magnetic-button"
         />
         <ToolCall
           name="get_component_prompt"
