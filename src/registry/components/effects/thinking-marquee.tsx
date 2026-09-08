@@ -78,7 +78,8 @@ export function ThinkingMarquee({
 
     const sync = () => {
       clearTimeout(timer);
-      const incoming = options.current.text;
+      // 折叠全部空白（换行符、制表符、连续空格等）为单个空格，避免撑破单行跑马灯结构。
+      const incoming = options.current.text.replace(/\s+/g, " ");
       if (!incoming.startsWith(source)) reset();
       if (incoming !== source) {
         source = incoming;
