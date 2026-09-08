@@ -2,6 +2,8 @@ import { Zap } from "lucide-react";
 import { ElasticSlider } from "@/registry/components/inputs/elastic-slider";
 import { TierSlider } from "@/registry/components/inputs/tier-slider";
 import type { RegistryEntry } from "@/registry/types";
+import { controlEntries } from "./controls";
+import { selectionEntries } from "./selections";
 
 export const inputEntries: RegistryEntry[] = [
   {
@@ -78,4 +80,6 @@ export function VolumeControl() {
       </div>
     ),
   },
+  ...controlEntries,
+  ...selectionEntries,
 ];

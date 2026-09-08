@@ -3,6 +3,7 @@ import { buttonEntries } from "./entries/buttons";
 import { cardEntries } from "./entries/cards";
 import { effectEntries } from "./entries/effects";
 import { effectMoreEntries } from "./entries/effects/additional";
+import { feedbackEntries } from "./entries/feedback";
 import { inputEntries } from "./entries/inputs";
 import { navigationEntries } from "./entries/navigation";
 import { scrollEntries } from "./entries/scroll";
@@ -25,6 +26,7 @@ export const registry: readonly RegistryEntry[] = [
   ...inputEntries,
   ...navigationEntries,
   ...textureEntries,
+  ...feedbackEntries,
 ];
 
 export function getEntry(slug: string): RegistryEntry | undefined {

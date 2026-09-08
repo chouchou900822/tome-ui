@@ -9,7 +9,8 @@ export type CategoryId =
   | "effects"
   | "inputs"
   | "navigation"
-  | "textures";
+  | "textures"
+  | "feedback";
 
 export interface Category {
   id: CategoryId;

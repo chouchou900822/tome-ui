@@ -1,5 +1,6 @@
 import { Cpu, Orbit, Zap } from "lucide-react";
 import { ElectricBorder } from "@/registry/components/cards/electric-border";
+import { MetricCard } from "@/registry/components/cards/metric-card";
 import { SpotlightCard } from "@/registry/components/cards/spotlight-card";
 import { TiltCard } from "@/registry/components/cards/tilt-card";
 import type { RegistryEntry } from "@/registry/types";
@@ -128,4 +129,48 @@ export function Warning() {
     ),
   },
   ...surfaceEntries,
+  {
+    slug: "metric-card",
+    title: "趋势指标卡",
+    name: "Metric Card",
+    category: "cards",
+    description: "大号指标搭配一条轻盈趋势线，划过曲线即可读出每个时刻的数据。",
+    designNotes: [
+      "底色 #141719、16px 圆角、1px 白色 10% 边框；数值使用等宽字体，小舞台 28px、大舞台 36px，字距 -0.06em",
+      "SVG viewBox 为 320×100，横轴内缩 8px，纵轴数据映射到 16–80；相邻数据以中点控制的三次贝塞尔连接，线宽固定 2px",
+      "正向趋势色 #bdd5ac、负向 #e8b4a4、中性 #adbed4；面积渐变从同色 18% 衰减到 0%，3 条网格线透明度 6%",
+      "指针或原生 range 键盘操作选取数据点，当前点显示 3px 实心圆与 7px 淡色光圈，同时更新日期和数值；离开且失焦后恢复汇总",
+      "过滤非有限数值，空数据展示占位，单点与等值序列固定在 y=48；没有挂载动画，焦点环 2px，渐变 id 由 useId 隔离",
+    ],
+    deps: [],
+    file: "cards/metric-card.tsx",
+    tags: ["数据", "图表", "趋势", "仪表盘", "指标"],
+    usage: `import { MetricCard, type MetricPoint } from "@/components/ui/metric-card";
+
+const data: MetricPoint[] = [
+  { label: "周一", value: 1200 }, { label: "周二", value: 1800 },
+  { label: "周三", value: 1600 }, { label: "周四", value: 2400 },
+  { label: "周五", value: 3100 },
+];
+
+export function Analytics() {
+  return <MetricCard label="每周访问" value="10,100" change="+24.8%"
+    footnote="较上一周" data={data} className="max-w-sm" />;
+}`,
+    preview: (
+      <MetricCard label="本月营收" value="¥48,290" change="+18.6%" footnote="较上月 · 划过曲线查看数据" className="max-w-sm" data={[
+        { label: "09.01", value: 21400, formattedValue: "¥21,400" },
+        { label: "09.04", value: 28200, formattedValue: "¥28,200" },
+        { label: "09.07", value: 26300, formattedValue: "¥26,300" },
+        { label: "09.10", value: 35200, formattedValue: "¥35,200" },
+        { label: "09.13", value: 31400, formattedValue: "¥31,400" },
+        { label: "09.16", value: 38700, formattedValue: "¥38,700" },
+        { label: "09.19", value: 36600, formattedValue: "¥36,600" },
+        { label: "09.22", value: 43100, formattedValue: "¥43,100" },
+        { label: "09.25", value: 41200, formattedValue: "¥41,200" },
+        { label: "09.28", value: 48290, formattedValue: "¥48,290" },
+      ]} />
+    ),
+    previewClassName: "px-4 pb-3 pt-11 @md:p-8",
+  },
 ];
