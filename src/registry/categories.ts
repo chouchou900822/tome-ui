@@ -55,6 +55,12 @@ export const categories: readonly Category[] = [
     code: "TEXTURES",
     description: "像素与字符铺成的数字噪声，沉在最底层的科技质感。",
   },
+  {
+    id: "feedback",
+    label: "状态反馈",
+    code: "FEEDBACK",
+    description: "通知、确认与状态变化，让每一次操作都有清晰而温和的回应。",
+  },
 ] as const;
 
 export function getCategory(id: CategoryId): Category {

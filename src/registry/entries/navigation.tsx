@@ -1,4 +1,7 @@
+import { ChartNoAxesCombined, Clock3, Folder, SlidersHorizontal } from "lucide-react";
 import { ChapterScrubber, type Chapter } from "@/registry/components/navigation/chapter-scrubber";
+import { ProgressSteps } from "@/registry/components/navigation/progress-steps";
+import { SlidingTabs } from "@/registry/components/navigation/sliding-tabs";
 import type { RegistryEntry } from "@/registry/types";
 
 /** 演示数据：一期设计播客的章节表 */
@@ -63,5 +66,95 @@ export function PlayerChapters() {
       </div>
     ),
     previewClassName: "px-0",
+  },
+  {
+    slug: "sliding-tabs",
+    title: "滑动页签",
+    name: "Sliding Tabs",
+    category: "navigation",
+    description: "浅色浮片在深色轨道中滑行，清楚标记当前位置，也保留面板中的输入状态。",
+    designNotes: [
+      "轨道为 #101314、12px 圆角、6px 内边距与 1px 白色 10% 边框；每个标签最小高 40px，标签间距 4px",
+      "选中浮片使用 #dbe4d1 底色、#233020 文字、8px 圆角与 1px 顶部白色内高光，Motion 共享 layoutId 在选项之间移动",
+      "弹簧 stiffness 420、damping 34；useId 为每个实例创建独立标记，初次挂载不播入场动画，减少动画时 duration=0",
+      "每组只有 1 个 Tab 入口，左右方向键循环跳过禁用项，Home / End 到首尾；tab 与 tabpanel 通过独立 id 关联",
+      "面板距轨道小舞台 12px、大舞台 16px，通过 hidden 切换而非卸载，表单内容保留；支持 value / defaultValue，面板焦点环为 2px",
+    ],
+    deps: ["motion"],
+    file: "navigation/sliding-tabs.tsx",
+    tags: ["页签", "导航", "弹簧", "面板", "键盘"],
+    usage: `import { SlidingTabs, type SlidingTab } from "@/components/ui/sliding-tabs";
+
+const tabs: SlidingTab[] = [
+  { id: "overview", label: "概览", content: <p className="p-4 text-sm text-zinc-300">项目概览</p> },
+  { id: "activity", label: "动态", content: <p className="p-4 text-sm text-zinc-300">最近的项目动态</p> },
+  { id: "settings", label: "设置", content: <label className="block p-4 text-sm text-zinc-300"><input type="checkbox" defaultChecked /> 自动保存</label> },
+];
+
+export function ProjectTabs() {
+  return <SlidingTabs label="项目视图" tabs={tabs} className="max-w-md" />;
+}`,
+    preview: (
+      <SlidingTabs label="工作室视图" className="max-w-sm" tabs={[
+        { id: "overview", label: "概览", icon: <ChartNoAxesCombined className="size-3.5" />, content: (
+          <div className="rounded-xl border border-white/8 bg-[#151a18] p-3 @md:p-5">
+            <div className="flex items-center justify-between text-[9px]"><span className="text-zinc-400">本周访问</span><span className="text-[#bed3ad]">+18.6%</span></div>
+            <p className="mt-2 font-mono text-2xl tracking-tight text-zinc-100 @md:mt-3 @md:text-3xl">24,680</p>
+            <div aria-hidden className="mt-2 flex h-4 items-end gap-1.5 @md:mt-3 @md:h-6">{[35, 55, 42, 65, 58, 80, 72, 95, 82, 100, 86, 98].map((height, index) => <span key={index} className="flex-1 rounded-t-sm bg-[#c3d8b1]/40 last:bg-[#c3d8b1]" style={{ height: `${height}%` }} />)}</div>
+          </div>
+        ) },
+        { id: "activity", label: "动态", icon: <Clock3 className="size-3.5" />, content: (
+          <div className="rounded-xl border border-white/8 bg-[#151a18] p-3 @md:p-5">
+            <p className="text-[9px] text-zinc-400">今天，一切都在发生</p>
+            <div className="mt-2 flex items-center justify-between border-b border-white/8 pb-2 text-xs text-zinc-200 @md:mt-3 @md:pb-3"><span>品牌手册已更新</span><span className="font-mono text-[9px] text-zinc-500">14:32</span></div>
+            <div className="mt-2 flex items-center justify-between text-xs text-zinc-200 @md:mt-3"><span>新成员加入工作室</span><span className="font-mono text-[9px] text-zinc-500">10:18</span></div>
+          </div>
+        ) },
+        { id: "settings", label: "设置", icon: <SlidersHorizontal className="size-3.5" />, content: (
+          <div className="rounded-xl border border-white/8 bg-[#151a18] p-3 @md:p-5">
+            <p className="text-xs text-zinc-200">让灵感被妥善保留</p>
+            <p className="mt-2 text-[10px] text-zinc-400">切换页签后，选择依然保留。</p>
+            <label className="mt-4 flex items-center gap-2 text-[10px] text-zinc-300"><input type="checkbox" defaultChecked className="size-3.5 accent-[#c3d8b1]" />自动保存工作进度</label>
+          </div>
+        ) },
+      ]} />
+    ),
+    previewClassName: "px-4 pb-3 pt-11 @md:p-8",
+  },
+  {
+    slug: "progress-steps",
+    title: "步骤导航",
+    name: "Progress Steps",
+    category: "navigation",
+    description: "珠点与细线串联任务进度，把复杂流程拆成清晰、可返回的小步。",
+    designNotes: [
+      "底板为 #141719、16px 圆角、1px 白色 10% 边框；步骤节点小舞台 24px、大舞台 32px，节点外侧留 5px 同色隔离环",
+      "当前节点为 #dce8cd，完成路径为 #c2d5b9；1px 连接线从左向右延伸，350ms 到位，减少动画时 duration=0",
+      "当前及之前的步骤可点击，未来步骤只通过下一步推进；第 1 步禁用返回，最后一步显示 finalAction 插槽或完成提示",
+      "内容通过 hidden 切换，保留每一步的表单状态；value / defaultValue 支持 2 种模式，aria-current=step 与实时播报明确当前步骤",
+      "小舞台内容横向内边距 12px、纵向 8px，大舞台 24px；底部按钮最小高 28px、大舞台 36px，前进或返回后焦点移到新标题",
+    ],
+    deps: ["motion"],
+    file: "navigation/progress-steps.tsx",
+    tags: ["步骤", "流程", "引导", "导航", "进度"],
+    usage: `import { ProgressSteps, type ProgressStep } from "@/components/ui/progress-steps";
+
+const steps: ProgressStep[] = [
+  { id: "space", title: "工作空间", content: <label className="text-sm text-zinc-300">名称<input defaultValue="我的工作室" className="ml-3 rounded border border-white/20 bg-white/5 p-2" /></label> },
+  { id: "style", title: "视觉语言", content: <p className="text-sm text-zinc-400">选择适合你的风格。</p> },
+  { id: "ready", title: "准备就绪", content: <p className="text-sm text-zinc-400">一切就绪，可以开始创作。</p> },
+];
+
+export function SetupFlow() {
+  return <ProgressSteps label="创建工作空间" steps={steps} className="max-w-md" />;
+}`,
+    preview: (
+      <ProgressSteps label="创建工作空间" className="max-w-sm" steps={[
+        { id: "space", title: "工作空间", content: <div className="flex items-center gap-2 text-[10px] text-zinc-400"><Folder aria-hidden className="size-3.5 text-[#c2d5b9]" /><span>Studio / 我们的下一次创作</span></div> },
+        { id: "style", title: "视觉语言", content: <div className="flex items-center gap-2 text-[10px] text-zinc-400"><span aria-hidden className="size-3 rounded-full border border-white/20 bg-[#1c2420]" /><span aria-hidden className="size-3 rounded-full bg-[#c2d5b9]" /><span>石墨与鼠尾草</span></div> },
+        { id: "ready", title: "准备就绪", content: <p className="text-[10px] text-[#c2d5b9]">空间已准备好，下一步交给灵感。</p> },
+      ]} />
+    ),
+    previewClassName: "px-3 pb-3 pt-11 @md:p-8",
   },
 ];
