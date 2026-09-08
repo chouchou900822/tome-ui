@@ -4,7 +4,6 @@ import { ScrollRingCarousel } from "@/registry/components/scroll/scroll-ring-car
 import { ScrollScene } from "@/registry/components/scroll/scroll-scene";
 import { ScrollSnapGallery } from "@/registry/components/scroll/scroll-snap-gallery";
 import { StackedScrollCards } from "@/registry/components/scroll/stacked-scroll-cards";
-import { StaggeredTextReveal } from "@/registry/components/scroll/staggered-text-reveal";
 import type { RegistryEntry } from "@/registry/types";
 
 export const scrollEntries: RegistryEntry[] = [
@@ -54,7 +53,7 @@ export function Story() {
     designNotes: [
       "舞台 perspective 为 760px，所有卡片等分 360° 并以 rotateY(index × 360 / 数量) translateZ(150px) 排成环",
       "完整滚动距离为 max(220%, items.length × 70%)，映射到从第 1 张至最后 1 张的连续旋转角度",
-      "卡片尺寸在小舞台为 144×176px、大舞台为 176×208px，圆角 16px、边框白色 15%、背面隐藏",
+      "舞台建立尺寸容器，卡宽 clamp(96px,40cqh,176px)、卡高 clamp(112px,48cqh,208px)，圆角 16px、白 15% 边框、背面隐藏；底部预留 48/64px，避免卡片与标题提示重叠",
       "prefers-reduced-motion 时连续旋转改为按最近索引离散跳转，仍保留键盘聚焦与滚动选择能力",
     ],
     deps: [],
@@ -85,40 +84,6 @@ export function Portfolio() {
       />
     ),
     previewClassName: "p-0",
-  },
-  {
-    slug: "staggered-text-reveal",
-    title: "逐字错峰入场",
-    name: "Staggered Text Reveal",
-    category: "scroll",
-    description: "文字进入视口时逐字上浮、去模糊并显现，让标题形成清晰的阅读节拍。",
-    designNotes: [
-      "默认逐字间隔 35ms、单字时长 550ms，缓动为 cubic-bezier(0.22, 1, 0.36, 1)",
-      "每个字符从 y 32px、rotate 4deg、blur 8px、opacity 0 过渡到最终状态，旋转原点固定在底边",
-      "元素进入视口 65% 时触发，viewport once:false 允许离开后再次进入重播，不需要额外 loop 属性",
-      "外层 aria-label 保留完整文本、拆分字符 aria-hidden；prefers-reduced-motion 时首帧直接显示终态",
-    ],
-    deps: ["motion"],
-    file: "scroll/staggered-text-reveal.tsx",
-    usage: `import { StaggeredTextReveal } from "@/components/ui/staggered-text-reveal";
-
-export function Headline() {
-  return (
-    <h1 className="text-7xl font-semibold tracking-tight">
-      <StaggeredTextReveal text="MAKE IT MOVE" stagger={0.035} duration={0.55} />
-    </h1>
-  );
-}`,
-    tags: ["文字", "错峰", "进视口", "标题"],
-    preview: (
-      <div className="max-w-4xl text-center">
-        <p className="mb-5 text-[9px] uppercase tracking-[0.32em] text-zinc-500">Enter the frame</p>
-        <StaggeredTextReveal
-          text="MAKE IT MOVE"
-          className="justify-center text-3xl font-semibold tracking-[-0.055em] text-white @md:text-5xl @xl:text-7xl"
-        />
-      </div>
-    ),
   },
   {
     slug: "scroll-snap-gallery",
@@ -165,7 +130,7 @@ export function Gallery() {
     description: "卡片随滚动依次吸附到同一位置，后一层覆盖前一层形成连续的纵深转场。",
     designNotes: [
       "每张卡使用 position:sticky；首层 top 在小/大舞台为 16px/28px，后续层分别递增 12px/14px，并以更高 z-index 覆盖前层",
-      "单卡高度为容器 76%、最小高度 208px；卡片间垂直距离由 80px 过渡到 112px",
+      "单卡高度为容器 76%，小/大舞台最小高度 160px/208px；卡片间垂直距离由 80px 过渡到 112px，窄屏不再被 256px 最小舞台高度裁切",
       "卡片圆角 16px、1px 白色 10% 边框，并添加 0 -18px 50px 黑色 35% 顶部阴影强调叠层边界",
       "末尾留出容器宽度 52% 的滚动缓冲区，让最后一张完整吸附后仍有停留距离；全程无需 JavaScript",
     ],

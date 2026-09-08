@@ -19,7 +19,7 @@ interface WordRotateProps {
 export function WordRotate({ words, className, interval = 2400 }: WordRotateProps) {
   const [index, setIndex] = useState(0);
   const reduce = useReducedMotion();
-  const current = words[index];
+  const current = words[index % words.length];
 
   useEffect(() => {
     if (reduce || words.length < 2) return;
@@ -31,22 +31,25 @@ export function WordRotate({ words, className, interval = 2400 }: WordRotateProp
 
   return (
     <span
-      aria-live="polite"
-      className={cn("relative inline-flex overflow-hidden align-bottom", className)}
+      className={cn("relative inline-grid overflow-hidden align-bottom", className)}
     >
-      <AnimatePresence mode="wait" initial={false}>
+      {words.map((word, i) => (
+        <span key={i} aria-hidden className="invisible col-start-1 row-start-1 whitespace-nowrap">{word}</span>
+      ))}
+      <AnimatePresence initial={false}>
         <motion.span
           key={index}
-          aria-label={current}
-          className="inline-block whitespace-nowrap will-change-transform"
-          initial={reduce ? undefined : { y: "80%", opacity: 0 }}
-          animate={reduce ? undefined : { y: "0%", opacity: 1 }}
-          exit={reduce ? undefined : { y: "-80%", opacity: 0 }}
-          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          aria-hidden
+          className="col-start-1 row-start-1 inline-block whitespace-nowrap"
+          initial={reduce ? false : { y: "65%", opacity: 0, filter: "blur(4px)" }}
+          animate={{ y: "0%", opacity: 1, filter: "blur(0px)" }}
+          exit={{ y: reduce ? "0%" : "-65%", opacity: 0, filter: reduce ? "blur(0px)" : "blur(4px)" }}
+          transition={{ duration: reduce ? 0 : 0.45, ease: [0.22, 1, 0.36, 1] }}
         >
           {current}
         </motion.span>
       </AnimatePresence>
+      <span className="sr-only" aria-live="polite" aria-atomic="true">{current}</span>
     </span>
   );
 }

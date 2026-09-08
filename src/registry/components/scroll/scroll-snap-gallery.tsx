@@ -16,7 +16,7 @@ export function ScrollSnapGallery({ items, className }: ScrollSnapGalleryProps) 
   return (
     <div
       className={cn(
-        "h-full min-h-64 w-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain bg-[#0b0b0d] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+        "h-full min-h-0 w-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain bg-[#0b0b0d] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
         className,
       )}
       tabIndex={0}

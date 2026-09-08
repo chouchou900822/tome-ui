@@ -46,7 +46,7 @@ export function Panel() {
     category: "effects",
     description: "指针靠近的字符被压粗，划过时像手指按过一行软字。",
     designNotes: [
-      "每个字符独立 span，指针移动经 rAF 节流后逐字测量与指针的距离，字重直接写入 style，不触发 React 重渲染",
+      "每个字符以最大字重 850 的透明网格占位固定字宽，动态字重不推动邻字；rAF 节流后先读取全部字框，再批量写入 style，不触发 React 重渲染",
       "距离在 130px 半径内线性映射字重 400→850（font-weight 与 font-variation-settings 双写），离开区域回落",
       "需要可变字体才有平滑过渡（系统 UI 字体多为可变）；过渡加 100ms transition 消除跳变",
       "外层 aria-label 保留完整文本；prefers-reduced-motion 时保持静态字重",

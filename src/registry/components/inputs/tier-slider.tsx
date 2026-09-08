@@ -208,12 +208,12 @@ export function TierSlider({ label, levels, defaultIndex = 0, onChange, icon, cl
   return (
     <div
       className={cn(
-        "w-full max-w-[430px] rounded-[28px] border border-white/10 bg-zinc-900/90 p-6 pb-7 shadow-[0_12px_40px_rgba(0,0,0,0.4)]",
+        "w-full max-w-[430px] rounded-[28px] border border-white/10 bg-zinc-900/90 p-5 pb-7 shadow-[0_12px_40px_rgba(0,0,0,0.4)] @md:p-6 @md:pb-7",
         className,
       )}
     >
       <style href="tier-slider-keyframes" precedence="medium">{KEYFRAMES}</style>
-      <div className="mb-6 flex items-center gap-3.5">
+      <div className="mb-6 flex items-center gap-2 @md:gap-3.5">
         <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-xl bg-white/[0.06] text-zinc-400">
           {icon ?? (
             <svg
@@ -225,17 +225,17 @@ export function TierSlider({ label, levels, defaultIndex = 0, onChange, icon, cl
           )}
         </span>
         <div className="flex flex-1 items-baseline justify-center gap-2 whitespace-nowrap">
-          <span className="text-xl font-bold tracking-tight tabular-nums text-white @md:text-2xl">{label}</span>
+          <span className="text-lg font-semibold tracking-tight tabular-nums text-white @md:text-2xl">{label}</span>
           <span
             ref={wordRef}
-            className="tier-slider-word text-xl font-bold tracking-tight @md:text-2xl"
+            className="tier-slider-word text-lg font-semibold tracking-tight @md:text-2xl"
             style={{ color: wordColor(startColor) }}
           >
             {levels[startIndex]}
           </span>
         </div>
         {/* 占位平衡左侧图标，保持标题视觉居中 */}
-        <span aria-hidden className="size-10 shrink-0" />
+        <span aria-hidden className="hidden size-10 shrink-0 @md:block" />
       </div>
       <div className="relative h-[52px]">
         <div

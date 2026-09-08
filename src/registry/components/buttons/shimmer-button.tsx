@@ -35,8 +35,8 @@ export function ShimmerButton({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        "group relative inline-flex overflow-hidden rounded-full p-px",
-        "transition-transform duration-300 ease-out hover:-translate-y-0.5 active:translate-y-0",
+        "group/shimmer relative inline-flex overflow-hidden rounded-full bg-white/10 p-px text-sm font-medium text-white",
+        "transition-transform duration-300 ease-out motion-safe:hover:-translate-y-0.5 motion-safe:active:translate-y-0",
         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/60",
         "disabled:pointer-events-none disabled:opacity-50",
         className,
@@ -44,27 +44,27 @@ export function ShimmerButton({
     >
       <span
         aria-hidden
-        className="absolute inset-[-100%] motion-safe:animate-[shimmer-spin_3s_linear_infinite]"
+        className="absolute -inset-x-1/4 top-1/2 aspect-square -translate-y-1/2 motion-safe:animate-[shimmer-spin_3s_linear_infinite] group-disabled/shimmer:[animation-play-state:paused]"
         style={{
           animationDuration: `${speed}s`,
-          background: `conic-gradient(from 90deg at 50% 50%, transparent 0%, ${shimmerColor} 10%, transparent 20%, transparent 52%, ${shimmerColor} 58%, transparent 64%)`,
+          background: `conic-gradient(from 90deg, transparent 55%, color-mix(in srgb, ${shimmerColor} 20%, transparent) 75%, ${shimmerColor} 88%, transparent 90%)`,
         }}
       />
       <span
-        className="relative inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-medium text-white"
+        className="relative inline-flex items-center gap-2 rounded-full px-7 py-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),inset_0_-1px_0_rgba(0,0,0,0.4)]"
         style={{ background }}
       >
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-full opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+          className="pointer-events-none absolute inset-0 rounded-full opacity-0 transition-opacity duration-500 group-hover/shimmer:opacity-100 group-focus-visible/shimmer:opacity-100 motion-reduce:transition-none"
           style={{
-            background: `radial-gradient(60% 120% at 50% 100%, ${shimmerColor}22, transparent)`,
+            background: `radial-gradient(60% 120% at 50% 100%, color-mix(in srgb, ${shimmerColor} 12%, transparent), transparent)`,
           }}
         />
         <span className="relative inline-flex items-center gap-2">{children}</span>
       </span>
       <style href="shimmer-button-keyframes" precedence="medium">
-        {`@keyframes shimmer-spin{to{transform:rotate(1turn)}}`}
+        {`@keyframes shimmer-spin{to{rotate:1turn}}`}
       </style>
     </button>
   );

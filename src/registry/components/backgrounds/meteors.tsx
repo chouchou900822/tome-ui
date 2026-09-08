@@ -44,10 +44,10 @@ export function Meteors({ children, className, count = 14 }: MeteorsProps) {
   .meteors-fall { animation: meteors-fall linear infinite backwards; }
 }
 @keyframes meteors-fall {
-  0% { transform: rotate(215deg) translateX(0); opacity: 0; }
+  0% { transform: rotate(-35deg) translateX(0); opacity: 0; }
   15% { opacity: 1; }
   70% { opacity: 1; }
-  100% { transform: rotate(215deg) translateX(-480px); opacity: 0; }
+  100% { transform: rotate(-35deg) translateX(-480px); opacity: 0; }
 }`}
       </style>
     </div>

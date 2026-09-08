@@ -27,7 +27,7 @@ export const navigationEntries: RegistryEntry[] = [
     designNotes: [
       "全部刻度由两个共享弹簧驱动，避免逐行状态：指针弹簧 stiffness 700 / damping 52 / mass 0.5，近临界阻尼、几乎零延迟跟随光标且从不过冲；强度弹簧 stiffness 260 / damping 30 / mass 0.6 更软，波形起落带呼吸感",
       "每根刻度的抬升量 = 强度 × 升余弦 bump(与指针的行距 / 半径)，波峰为 1、半径外为 0、两端斜率为零，衰减无接缝；默认半径 4 行，刻度由静息 14px 伸长至峰值 56px，透明度从 0.22（当前章节 0.55）升至 1，厚度 scaleY 1 → 1.4",
-      "预览卡宽 260px、距轨道 20px，top 随指针弹簧滑动并钳制在轨道上下界内；靠近视口边缘时自动翻向更宽敞的一侧，出现时缩放 0.97 → 1、横向让出 6px",
+      "预览卡最大宽 260px，窄容器取 100cqw - 104px、距轨道 20px；top 钳制在轨道上下界，靠近视口边缘时翻向更宽敞侧；出现时 scale 0.97→1、横向移动 6px",
       "可访问性：role=listbox + roving tabindex（同一时刻仅一章可 Tab），上下 / 左右方向键逐章移动，Home / End 跳首尾，Enter / Space 选中，aria-activedescendant 跟随活动项",
       "prefers-reduced-motion 时去掉弹簧的时间缓动、保留空间波形，抬升即时呈现；当前章节刻度以强调色常亮",
     ],
@@ -52,8 +52,14 @@ export function PlayerChapters() {
 }`,
     tags: ["导航", "章节", "悬停", "弹簧", "可访问性"],
     preview: (
-      <div className="flex h-full w-full items-center justify-start pl-6 @xl:pl-10">
+      <div className="flex h-full w-full items-center gap-4 pl-4 pr-6 @xl:gap-8 @xl:pl-10">
         <ChapterScrubber chapters={PODCAST_CHAPTERS} currentIndex={3} />
+        <div className="min-w-0 flex-1 border-l border-white/8 pl-5">
+          <p className="font-mono text-[8px] tracking-[0.2em] text-zinc-500 @md:text-[10px]">DESIGN NOTES / 012</p>
+          <h4 className="mt-4 text-xl font-medium tracking-tight text-zinc-200 @md:text-3xl">留白之间</h4>
+          <p className="mt-2 text-[10px] text-zinc-500 @md:text-xs">关于字体、秩序与阅读的节奏</p>
+          <p className="mt-6 text-[9px] text-zinc-400 @md:text-[11px]">划过左侧刻度，预览章节</p>
+        </div>
       </div>
     ),
     previewClassName: "px-0",

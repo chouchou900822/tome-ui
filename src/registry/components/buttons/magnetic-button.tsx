@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
+import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from "motion/react";
 import type { MouseEvent, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
@@ -31,6 +31,7 @@ export function MagneticButton({
 }: MagneticButtonProps) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
+  const reduce = useReducedMotion();
   const spring = { stiffness: 180, damping: 16, mass: 0.2 };
   const sx = useSpring(x, spring);
   const sy = useSpring(y, spring);
@@ -38,6 +39,7 @@ export function MagneticButton({
   const ty = useTransform(sy, (v) => v * 0.45);
 
   const onMove = (e: MouseEvent<HTMLSpanElement>) => {
+    if (reduce || disabled) return;
     const rect = e.currentTarget.getBoundingClientRect();
     x.set((e.clientX - (rect.left + rect.width / 2)) * strength);
     y.set((e.clientY - (rect.top + rect.height / 2)) * strength);
@@ -59,17 +61,18 @@ export function MagneticButton({
         type={type}
         disabled={disabled}
         onClick={onClick}
-        style={{ x: sx, y: sy }}
-        whileTap={{ scale: 0.96 }}
+        style={{ x: reduce || disabled ? 0 : sx, y: reduce || disabled ? 0 : sy }}
+        whileTap={reduce || disabled ? undefined : { scale: 0.96 }}
         className={cn(
           "relative inline-flex items-center justify-center gap-2 rounded-full",
           "bg-white px-7 py-3.5 text-sm font-medium text-black",
           "shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_12px_40px_-12px_rgba(255,255,255,0.35)]",
           "transition-colors hover:bg-zinc-100 disabled:pointer-events-none disabled:opacity-50",
+          "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/60",
           className,
         )}
       >
-        <motion.span style={{ x: tx, y: ty }} className="inline-flex items-center gap-2">
+        <motion.span style={{ x: reduce || disabled ? 0 : tx, y: reduce || disabled ? 0 : ty }} className="inline-flex items-center gap-2">
           {children}
         </motion.span>
       </motion.button>

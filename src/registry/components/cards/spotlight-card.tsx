@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useMotionTemplate, useMotionValue } from "motion/react";
+import { motion, useMotionTemplate, useMotionValue, useReducedMotion } from "motion/react";
 import type { MouseEvent, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
@@ -25,8 +25,10 @@ export function SpotlightCard({
 }: SpotlightCardProps) {
   const x = useMotionValue(-radius);
   const y = useMotionValue(-radius);
+  const reduce = useReducedMotion();
 
   const onMove = (e: MouseEvent<HTMLDivElement>) => {
+    if (reduce) return;
     const rect = e.currentTarget.getBoundingClientRect();
     x.set(e.clientX - rect.left);
     y.set(e.clientY - rect.top);
@@ -39,21 +41,21 @@ export function SpotlightCard({
     <div
       onMouseMove={onMove}
       className={cn(
-        "group relative overflow-hidden rounded-2xl border border-white/10 bg-zinc-950 p-8",
+        "group/spotlight relative overflow-hidden rounded-2xl border border-white/10 bg-zinc-950 p-8",
         className,
       )}
     >
       <motion.div
         aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-        style={{ background: glow }}
+        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover/spotlight:opacity-100 group-focus-within/spotlight:opacity-100 motion-reduce:transition-none"
+        style={{ background: reduce ? `radial-gradient(${radius}px circle at 50% 30%, ${color}, transparent 70%)` : glow }}
       />
       <motion.div
         aria-hidden
-        className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        className="pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-500 group-hover/spotlight:opacity-100 motion-reduce:transition-none"
         style={{
           padding: 1,
-          background: edge,
+          background: reduce ? "none" : edge,
           maskImage: "linear-gradient(#000, #000), linear-gradient(#000, #000)",
           maskClip: "content-box, border-box",
           maskComposite: "exclude",

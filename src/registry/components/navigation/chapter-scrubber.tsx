@@ -88,7 +88,7 @@ const Tick = memo(function Tick({
     <motion.span
       aria-hidden="true"
       style={{ width, opacity, scaleY }}
-      className={cn("block h-[2px] rounded-full", isCurrent ? "bg-accent" : "bg-ink")}
+      className={cn("block h-[2px] rounded-full", isCurrent ? "bg-lime-300" : "bg-zinc-100")}
     />
   );
 });
@@ -271,19 +271,19 @@ export function ChapterScrubber({
             ...(resolvedSide === "right" ? { left: peakLength + GAP } : { right: peakLength + GAP }),
           }}
           className={cn(
-            "pointer-events-none absolute z-10 w-[260px] rounded-2xl border border-line bg-panel px-4 py-3.5 text-ink",
+            "pointer-events-none absolute z-10 w-[min(260px,calc(100cqw-104px))] rounded-2xl border border-white/10 bg-[#151617] px-4 py-3.5 text-zinc-100",
             "shadow-[0_2px_8px_-2px_rgba(0,0,0,0.5),0_18px_44px_-12px_rgba(0,0,0,0.65)]",
             resolvedSide === "right" ? "origin-left" : "origin-right",
           )}
         >
           {active.meta ? (
-            <div className="mb-1 text-xs font-medium tabular-nums text-mute">{active.meta}</div>
+            <div className="mb-1 text-xs font-medium tabular-nums text-zinc-400">{active.meta}</div>
           ) : null}
           <div className="truncate text-sm font-semibold leading-snug tracking-[-0.01em]">
             {active.title}
           </div>
           {active.description ? (
-            <p className="mt-1 line-clamp-3 text-sm leading-relaxed text-mute">
+            <p className="mt-1 line-clamp-3 text-sm leading-relaxed text-zinc-400">
               {active.description}
             </p>
           ) : null}
