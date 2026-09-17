@@ -1,4 +1,5 @@
 import { Check, MessageSquare, Upload } from "lucide-react";
+import { BreathingLine } from "@/registry/components/feedback/breathing-line";
 import { ToastStack } from "@/registry/components/feedback/toast-stack";
 import type { RegistryEntry } from "@/registry/types";
 
@@ -37,5 +38,38 @@ export function Notifications() {
       ]} />
     ),
     previewClassName: "px-3 pb-3 pt-11 @md:p-8",
+  },
+  {
+    slug: "breathing-line",
+    title: "呼吸线",
+    name: "Breathing Line",
+    category: "feedback",
+    description: "一道辉光沿发丝轨道生长、匀速、收缩消隐，用最少的像素表达页面级等待。",
+    designNotes: [
+      "轨道默认 240×1px，背景为两端透明、中段白色 16% 的水平渐变；光束高 2px 上移 1px 骑在轨道上，两端透明、中心为 #d7ff3c 的渐变",
+      "光束叠两层 drop-shadow(0 0 3.5px) 辉光，中心 3px 圆点带 6px/2px 扩散的 45% 同色光晕",
+      "一次扫掠 1.8s linear 无限循环，六段关键帧按轨道宽度百分比定义：left 0→21.67→41.67→61.67→76.67→93.33%，width 11.67→21.67→30→30→23.33→6.67%，即出生、生长、满长、匀速、收缩、消隐",
+      "根元素 role=status 并携带 aria-label；prefers-reduced-motion 时光束静止在 35% 处、宽 30%",
+      "颜色与时长通过 --bl-color / --bl-duration 自定义属性注入，轨道宽度改变时节奏不变",
+    ],
+    deps: [],
+    file: "feedback/breathing-line.tsx",
+    tags: ["加载", "Loading", "进度", "极简", "指示器"],
+    usage: `import { BreathingLine } from "@/components/ui/breathing-line";
+
+export function PageLoading() {
+  return (
+    <div className="flex h-64 flex-col items-center justify-center gap-6">
+      <BreathingLine width={240} duration={1.8} label="正在加载页面" />
+      <p className="text-xs tracking-[0.12em] text-white/50">LOADING</p>
+    </div>
+  );
+}`,
+    preview: (
+      <div className="flex flex-col items-center gap-6 @md:gap-8">
+        <BreathingLine width={240} className="max-w-[70cqw]" />
+        <p className="text-[10px] tracking-[0.12em] text-white/40 @md:text-xs">240 × 1 PX TRACK · 1.8S · LINEAR · LOOP</p>
+      </div>
+    ),
   },
 ];
