@@ -10,7 +10,8 @@ export type CategoryId =
   | "inputs"
   | "navigation"
   | "textures"
-  | "feedback";
+  | "feedback"
+  | "materials";
 
 export interface Category {
   id: CategoryId;

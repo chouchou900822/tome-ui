@@ -61,6 +61,12 @@ export const categories: readonly Category[] = [
     code: "FEEDBACK",
     description: "通知、确认与状态变化，让每一次操作都有清晰而温和的回应。",
   },
+  {
+    id: "materials",
+    label: "材质",
+    code: "MATERIALS",
+    description: "玻璃、折射与光泽，像真实物理材质一样与背后的内容发生作用。",
+  },
 ] as const;
 
 export function getCategory(id: CategoryId): Category {
