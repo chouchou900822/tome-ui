@@ -26,13 +26,14 @@ export const navigationEntries: RegistryEntry[] = [
     title: "章节擦洗器",
     name: "Chapter Scrubber",
     category: "navigation",
-    description: "垂直刻度轨道，悬停时指针周围泛起升余弦放大波，预览卡跟随光标逐章扫过。",
+    description: "垂直刻度轨道，悬停时指针周围泛起升余弦放大波，预览卡跟随光标逐章扫过；开启音乐联动后刻度随系统音频频段跳动。",
     designNotes: [
       "全部刻度由两个共享弹簧驱动，避免逐行状态：指针弹簧 stiffness 700 / damping 52 / mass 0.5，近临界阻尼、几乎零延迟跟随光标且从不过冲；强度弹簧 stiffness 260 / damping 30 / mass 0.6 更软，波形起落带呼吸感",
       "每根刻度的抬升量 = 强度 × 升余弦 bump(与指针的行距 / 半径)，波峰为 1、半径外为 0、两端斜率为零，衰减无接缝；默认半径 4 行，刻度由静息 14px 伸长至峰值 56px，透明度从 0.22（当前章节 0.55）升至 1，厚度 scaleY 1 → 1.4",
+      "音乐联动（audioReactive）：浏览器无法直读系统音频输出，改用 getDisplayMedia({ video: true, audio: true }) 取「共享系统音频」轨道并立即停掉视频轨，喂给 fftSize 64 / smoothingTimeConstant 0.75 的 AnalyserNode；每帧把 32 个频段按行映射进一个共享 MotionValue<number[]>（低频落在轨道底部，像均衡器），与指针波相加后钳制到 1，两套驱动互不压制；用户取消授权或不支持时按钮红一下 2.4s 自动恢复，卸载时关闭 AudioContext 并取消采样循环",
+      "音乐联动开关为轨道下方 28px 圆形按钮（内联 SVG 均衡器图标，零额外依赖），默认收起、点击才请求授权，避免一进页面就弹权限框；激活时以强调色描边并脉冲，aria-pressed 暴露状态；prefers-reduced-motion 下禁用该按钮",
       "预览卡最大宽 260px，窄容器取 100cqw - 104px、距轨道 20px；top 钳制在轨道上下界，靠近视口边缘时翻向更宽敞侧；出现时 scale 0.97→1、横向移动 6px",
       "可访问性：role=listbox + roving tabindex（同一时刻仅一章可 Tab），上下 / 左右方向键逐章移动，Home / End 跳首尾，Enter / Space 选中，aria-activedescendant 跟随活动项",
-      "prefers-reduced-motion 时去掉弹簧的时间缓动、保留空间波形，抬升即时呈现；当前章节刻度以强调色常亮",
     ],
     deps: ["motion"],
     file: "navigation/chapter-scrubber.tsx",
@@ -49,14 +50,15 @@ export function PlayerChapters() {
     <ChapterScrubber
       chapters={chapters}
       currentIndex={1}
+      audioReactive
       onSelect={(chapter) => console.log("跳转章节", chapter.id)}
     />
   );
 }`,
-    tags: ["导航", "章节", "悬停", "弹簧", "可访问性"],
+    tags: ["导航", "章节", "音频", "弹簧", "可访问性"],
     preview: (
       <div className="flex h-full w-full items-center gap-4 pl-4 pr-6 @xl:gap-8 @xl:pl-10">
-        <ChapterScrubber chapters={PODCAST_CHAPTERS} currentIndex={3} />
+        <ChapterScrubber chapters={PODCAST_CHAPTERS} currentIndex={3} audioReactive />
         <div className="min-w-0 flex-1 border-l border-white/8 pl-5">
           <p className="font-mono text-[8px] tracking-[0.2em] text-zinc-500 @md:text-[10px]">DESIGN NOTES / 012</p>
           <h4 className="mt-4 text-xl font-medium tracking-tight text-zinc-200 @md:text-3xl">留白之间</h4>
