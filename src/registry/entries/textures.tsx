@@ -1,8 +1,26 @@
+import { AsciiMedia } from "@/registry/components/textures/ascii-media";
 import { FlickeringGrid } from "@/registry/components/textures/flickering-grid";
 import { LetterGlitch } from "@/registry/components/textures/letter-glitch";
 import type { RegistryEntry } from "@/registry/types";
 
 const fill = "absolute inset-0 flex flex-col items-center justify-center gap-3 p-8 text-center";
+
+/** 字符影像的演示素材：一颗带环的受光行星，亮部会化作字符浮现 */
+const planet =
+  "data:image/svg+xml," +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360" viewBox="0 0 480 360">
+      <defs>
+        <radialGradient id="p" cx=".34" cy=".28" r=".85"><stop offset="0" stop-color="#fff"/><stop offset=".45" stop-color="#ddd"/><stop offset=".75" stop-color="#888"/><stop offset="1" stop-color="#2a2a2a"/></radialGradient>
+      </defs>
+      <circle cx="402" cy="64" r="16" fill="#e0e0e0"/>
+      <g transform="rotate(-16 240 180)" fill="none" stroke-width="22">
+        <ellipse cx="240" cy="180" rx="222" ry="56" stroke="#8a8a8a"/>
+        <circle cx="240" cy="180" r="112" fill="url(#p)" stroke="none"/>
+        <path d="M18 180A222 56 0 0 0 462 180" stroke="#fff"/>
+      </g>
+    </svg>`,
+  );
 
 export const textureEntries: RegistryEntry[] = [
   {
@@ -73,5 +91,37 @@ export function Section() {
         <p className="text-xs text-zinc-500 @md:text-sm">满屏字符在青绿噪声中跳变</p>
       </LetterGlitch>
     ),
+  },
+  {
+    slug: "ascii-media",
+    title: "字符影像",
+    name: "ASCII Media",
+    category: "textures",
+    description: "暗色伪代码铺满画布并按波浪成片跳变，图片或视频的亮部化作更亮的字符浮现，复刻 Inception 登录页右栏。",
+    designNotes: [
+      "纯黑底上铺 10px Courier New 等宽字符，行高 10px、列距取字宽的 1.3 倍；每行由关键字、随机串、0x 十六进制、运算符、括号组、标识符与符号拼成伪代码，12% 的行带 2–5 格缩进",
+      "每 40ms（25fps）刷新一次：非空格字符以 (sin(0.002·t + 行相位 + 列相位) + 1) / 2 × 20% 的概率换成随机字符，列相位沿行从 0 递增到 π，跳变像波浪横扫；空格永不变化，保住代码排版骨架",
+      "媒体 contain 适配到画布 95% 并居中，按字符网格缩采样：亮度 > 0.05 且 alpha > 20 的格子以 rgba(255,255,255, a × (0.15 + 0.85 × 亮度)) 绘制，其余格子画 0.15 透明度的底纹",
+      "视频静音循环、内联播放；IntersectionObserver 离屏时暂停循环与视频，ResizeObserver 重排网格，画布按 devicePixelRatio（上限 2）缩放",
+      "prefers-reduced-motion 时不跳变、不播放，只绘制一帧静态字符画（视频取首帧）",
+    ],
+    deps: [],
+    file: "textures/ascii-media.tsx",
+    tags: ["ASCII", "字符", "视频", "Canvas", "登录页"],
+    usage: `import { AsciiMedia } from "@/components/ui/ascii-media";
+
+export function SignInPage() {
+  return (
+    <div className="flex min-h-screen bg-[#0b0b0d]">
+      <main className="flex flex-1 items-center justify-center">
+        <h1 className="text-3xl font-semibold text-white">欢迎回来</h1>
+      </main>
+      {/* 换成你自己的图片或视频（同源或已开启 CORS），留空则只有代码底纹 */}
+      <AsciiMedia src="/hero.mp4" className="hidden flex-1 lg:block" />
+    </div>
+  );
+}`,
+    previewClassName: "p-0",
+    preview: <AsciiMedia src={planet} className="absolute inset-0" />,
   },
 ];
